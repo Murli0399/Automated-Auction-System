@@ -1,0 +1,250 @@
+mysql> CREATE DATABASE projectdb;
+
+
+mysql> USE projectdb;
+Database changed
+
+mysql> SHOW TABLES;
+Empty set
+--------------------------------------------------------------------
+
+mysql>
+CREATE TABLE admin(
+id int primary key auto_increment,
+username varchar(80) unique,
+password varchar(80) not null
+);
+
+
+mysql> DESC admin;
++----------+-------------+------+-----+---------+----------------+
+| Field    | Type        | Null | Key | Default | Extra          |
++----------+-------------+------+-----+---------+----------------+
+| id       | int         | NO   | PRI | NULL    | auto_increment |
+| username | varchar(80) | YES  | UNI | NULL    |                |
+| password | varchar(80) | NO   |     | NULL    |                |
++----------+-------------+------+-----+---------+----------------+
+
+
+mysql> INSERT INTO admin (username,password) VALUES('Admin1','A1111');
+mysql> INSERT INTO admin (username,password) VALUES('Admin2','A2222');
+
+
+mysql> SELECT * FROM admin;
++----+----------+----------+
+| id | username | password |
++----+----------+----------+
+|  1 | Admin1   | A1111    |
+|  2 | Admin2   | A2222    |
++----+----------+----------+
+
+------------------------------------------------------------------
+
+mysql>
+CREATE TABLE user(
+userid int primary key auto_increment,
+username varchar(80) unique,
+password varchar(80) not null,
+type enum('BUYER','SELLER')
+);
+
+
+mysql> DESC user;
++----------+------------------------+------+-----+---------+----------------+
+| Field    | Type                   | Null | Key | Default | Extra          |
++----------+------------------------+------+-----+---------+----------------+
+| userid   | int                    | NO   | PRI | NULL    | auto_increment |
+| username | varchar(80)            | YES  | UNI | NULL    |                |
+| password | varchar(80)            | NO   |     | NULL    |                |
+| type     | enum('BUYER','SELLER') | YES  |     | NULL    |                |
++----------+------------------------+------+-----+---------+----------------+
+
+
+mysql> INSERT INTO user (username,password,type) VALUES('Seller1','S1111','SELLER');
+mysql> INSERT INTO user (username,password,type) VALUES('Buyer1','B1111','BUYER');
+
+
+mysql> SELECT * FROM user;
++--------+----------+----------+--------+
+| userid | username | password | type   |
++--------+----------+----------+--------+
+|      1 | Seller1  | S1111    | SELLER |
+|      2 | Buyer1   | B1111    | BUYER  |
++--------+----------+----------+--------+
+
+
+-----------------------------------------------------------------------------
+
+mysql> 
+CREATE TABLE product(
+prodid int primary key auto_increment,
+name varchar(255),
+category varchar(255),
+minprice float,
+quantity int,
+sellerid int,
+foreign key (sellerid)references user(userid) on delete cascade on update cascade
+);
+
+
+mysql> INSERT INTO product (name,category,minprice,quantity,sellerid) VALUES('Starry Night','Art and crafts',5000000,1,1);
+
+mysql> INSERT INTO product (name,category,minprice,quantity,sellerid) VALUES('Old watch','Antiques',1000000,1,1);
+
+
+mysql> select * from product;
++--------+--------------+----------------+----------+----------+----------+
+| prodid | name         | category       | minprice | quantity | sellerid |
++--------+--------------+----------------+----------+----------+----------+
+|      1 | Starry Night | Art and crafts |  5000000 |        1 |        1 |
+|      2 | Old watch    | Antiques       |  1000000 |        1 |        1 |
++--------+--------------+----------------+----------+----------+----------+
+
+
+---------------------------------------------------------------------------------
+
+mysql>
+CREATE TABLE auction(
+auctionid int primary key auto_increment,
+sellerid int,
+prodid int,
+startdate date,
+enddate date,
+price float,
+buyerid int,
+foreign key (sellerid)references user(userid) on delete cascade on update cascade,
+foreign key (prodid)references product(prodid) on delete cascade on update cascade
+);
+
+
+mysql> DESC auction;
++-----------+-------+------+-----+---------+----------------+
+| Field     | Type  | Null | Key | Default | Extra          |
++-----------+-------+------+-----+---------+----------------+
+| auctionid | int   | NO   | PRI | NULL    | auto_increment |
+| sellerid  | int   | YES  | MUL | NULL    |                |
+| prodid    | int   | YES  | MUL | NULL    |                |
+| startdate | date  | YES  |     | NULL    |                |
+| enddate   | date  | YES  |     | NULL    |                |
+| price     | float | YES  |     | NULL    |                |
+| buyerid   | int   | YES  |     | NULL    |                |
++-----------+-------+------+-----+---------+----------------+
+
+
+mysql>  INSERT INTO auction (sellerid, prodid, startdate, enddate, price,buyerid) VALUES (1,1,'2022-10-01','2022-10-02',(SELECT minprice FROM product WHERE prodid=1),0);
+mysql> INSERT INTO auction (sellerid, prodid, startdate, enddate, price,buyerid) VALUES (1,2,'2022-09-26','2022-09-30',(SELECT minprice FROM product WHERE prodid=2),0);
+
+
+mysql> SELECT * FROM auction;
++-----------+----------+--------+------------+------------+---------+---------+
+| auctionid | sellerid | prodid | startdate  | enddate    | price   | buyerid |
++-----------+----------+--------+------------+------------+---------+---------+
+|         1 |        1 |      1 | 2022-10-01 | 2022-10-02 | 5000000 |       0 |
+|         2 |        1 |      2 | 2022-09-26 | 2022-09-30 | 1000000 |       0 |
++-----------+----------+--------+------------+------------+---------+---------+
+
+---------------------------------------------------------------------------------------
+
+mysql>  UPDATE auction SET buyerid=2, price=1100000 where price<1100000 and prodid=2;
+
+mysql> SELECT * FROM auction;
++-----------+----------+--------+------------+------------+---------+---------+
+| auctionid | sellerid | prodid | startdate  | enddate    | price   | buyerid |
++-----------+----------+--------+------------+------------+---------+---------+
+|         1 |        1 |      1 | 2022-10-01 | 2022-10-02 | 5000000 |       0 |
+|         2 |        1 |      2 | 2022-09-26 | 2022-09-30 | 1100000 |       2 |
++-----------+----------+--------+------------+------------+---------+---------+
+
+---------------------------------------------------------------------------------------
+
+
+mysql> 
+CREATE TABLE auctionhistory(
+auctionid int primary key,
+buyerid int,
+sellerid int,
+winningbid float,
+auctiondate date
+);
+
+mysql> DESC auctionhistory;
++-------------+-------+------+-----+---------+-------+
+| Field       | Type  | Null | Key | Default | Extra |
++-------------+-------+------+-----+---------+-------+
+| auctionid   | int   | NO   | PRI | NULL    |       |
+| buyerid     | int   | YES  |     | NULL    |       |
+| sellerid    | int   | YES  |     | NULL    |       |
+| winningbid  | float | YES  |     | NULL    |       |
+| auctiondate | date  | YES  |     | NULL    |       |
++-------------+-------+------+-----+---------+-------+
+
+--------------------------------------------------------------------------------------
+
+mysql> SELECT * FROM auction WHERE enddate < (select curdate());
++-----------+----------+--------+------------+------------+---------+---------+
+| auctionid | sellerid | prodid | startdate  | enddate    | price   | buyerid |
++-----------+----------+--------+------------+------------+---------+---------+
+|         2 |        1 |      2 | 2022-09-26 | 2022-09-30 | 1100000 |       2 |
++-----------+----------+--------+------------+------------+---------+---------+
+
+------------------------------------------------------------------------------------
+
+mysql> INSERT INTO auctionhistory (auctionid,buyerid,sellerid,winningbid,auctiondate) SELECT auctionid,buyerid,sellerid,price,enddate FROM auction WHERE enddate < (SELECT curdate() );
+
+
+mysql> SELECT * FROM auctionhistory;
++-----------+---------+----------+------------+-------------+
+| auctionid | buyerid | sellerid | winningbid | auctiondate |
++-----------+---------+----------+------------+-------------+
+|         2 |       2 |        1 |    1100000 | 2022-09-30  |
++-----------+---------+----------+------------+-------------+
+
+
+mysql> DELETE FROM auction WHERE enddate < (SELECT curdate() );
+
+
+mysql> SELECT * FROM auction;
++-----------+----------+--------+------------+------------+---------+---------+
+| auctionid | sellerid | prodid | startdate  | enddate    | price   | buyerid |
++-----------+----------+--------+------------+------------+---------+---------+
+|         1 |        1 |      1 | 2022-10-01 | 2022-10-02 | 5000000 |       0 |
++-----------+----------+--------+------------+------------+---------+---------+
+
+-------------------------------------------------------------------------------------
+
+mysql> UPDATE auction SET buyerid=1, price=5500000 WHERE price < 5500000 AND enddate >= (SELECT curdate()) AND auctionid=1;
+
+
+mysql> SELECT * FROM auction;
++-----------+----------+--------+------------+------------+---------+---------+
+| auctionid | sellerid | prodid | startdate  | enddate    | price   | buyerid |
++-----------+----------+--------+------------+------------+---------+---------+
+|         1 |        1 |      1 | 2022-10-01 | 2022-10-02 | 5500000 |       1 |
++-----------+----------+--------+------------+------------+---------+---------+
+
+----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
