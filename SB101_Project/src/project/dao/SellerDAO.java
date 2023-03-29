@@ -1,5 +1,6 @@
 package project.dao;
 
+import project.dto.ProductDTO;
 import project.dto.SellerDTO;
 import project.exception.NoRecordFoundException;
 import project.exception.SomethingWentWrongException;
@@ -10,4 +11,16 @@ public interface SellerDAO {
 	public void logout();
 
 	public void registerSeller(SellerDTO obj) throws SomethingWentWrongException;
+
+	public void updatePersonal(SellerDTO obj) throws SomethingWentWrongException;
+
+	public void viewProduct() throws SomethingWentWrongException, NoRecordFoundException;
+
+	public void addProduct(ProductDTO obj) throws SomethingWentWrongException;
+
+	public void updateProduct(int pid, ProductDTO obj) throws SomethingWentWrongException;
+
+	public void deleteProduct(int pid) throws SomethingWentWrongException;
+
+	public void deleteAccount() throws SomethingWentWrongException;
 }

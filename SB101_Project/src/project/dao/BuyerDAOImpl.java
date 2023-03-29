@@ -12,6 +12,39 @@ import project.util.DBUtils;
 
 public class BuyerDAOImpl implements BuyerDAO {
 
+	public void viewProduct() throws SomethingWentWrongException, NoRecordFoundException {
+		Connection conn = null;
+		try {
+			conn = DBUtils.getConnectionTodatabase();
+			String query = "SELECT product_id, seller_id, p.name, price, quantity, c.name from product p join category c ON p.category_id = c.id where is_deleted = 0";
+			PreparedStatement ps = conn.prepareStatement(query);
+
+			ResultSet rs = ps.executeQuery();
+			if (DBUtils.isResultSetEmpty(rs)) {
+				throw new NoRecordFoundException("	Product Not Found");
+			}
+
+			while (rs.next()) {
+				System.out.print("Product Id = " + rs.getInt(1));
+				System.out.print(" Seller Id = " + rs.getInt(2));
+				System.out.print(" Product Name = " + rs.getString(3));
+				System.out.print(" Price = " + rs.getDouble(4));
+				System.out.print(" Quantity = " + rs.getInt(5));
+				System.out.print(" Category = " + rs.getString(6));
+				System.out.println();
+			}
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			System.out.println(ex.getMessage());
+		} finally {
+			try {
+				DBUtils.closeConnection(conn);
+			} catch (SQLException ex) {
+
+			}
+		}
+	}
+
 	public void login(String username, String password) throws SomethingWentWrongException, NoRecordFoundException {
 		Connection conn = null;
 		try {
@@ -71,5 +104,62 @@ public class BuyerDAOImpl implements BuyerDAO {
 			}
 		}
 
+	}
+
+	@Override
+	public void updatePersonal(BuyerDTO obj) throws SomethingWentWrongException {
+		Connection conn = null;
+		try {
+
+			conn = DBUtils.getConnectionTodatabase();
+
+			String query = "UPDATE buyer SET buyerName = ?, address = ?, mobileNo = ?, username = ?, password = ? where buyerId = ?";
+
+			PreparedStatement ps = conn.prepareStatement(query);
+
+			ps.setString(1, obj.getName());
+			ps.setString(2, obj.getAddress());
+			ps.setString(3, obj.getMobile());
+			ps.setString(4, obj.getUsername());
+			ps.setString(5, obj.getPassword());
+			ps.setInt(6, StaticVar.LoggedInBuyerId);
+			ps.executeUpdate();
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			System.out.println(ex.getMessage());
+//			throw new SomethingWentWrongException("		Unable to Add Details");
+		} finally {
+			try {
+				DBUtils.closeConnection(conn);
+			} catch (SQLException ex) {
+
+			}
+		}
+	}
+
+	@Override
+	public void deleteAccount() throws SomethingWentWrongException {
+		Connection conn = null;
+		try {
+
+			conn = DBUtils.getConnectionTodatabase();
+
+			String query = "UPDATE buyer SET is_deleted = 1 where buyerId = ?";
+
+			PreparedStatement ps = conn.prepareStatement(query);
+
+			ps.setInt(1, StaticVar.LoggedInBuyerId);
+			ps.executeUpdate();
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			System.out.println(ex.getMessage());
+//			throw new SomethingWentWrongException("		Unable to Add Details");
+		} finally {
+			try {
+				DBUtils.closeConnection(conn);
+			} catch (SQLException ex) {
+
+			}
+		}
 	}
 }

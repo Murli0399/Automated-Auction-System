@@ -10,4 +10,10 @@ public interface BuyerDAO {
 	public void logout();
 
 	public void registerBuyer(BuyerDTO obj) throws SomethingWentWrongException;
+
+	public void updatePersonal(BuyerDTO obj) throws SomethingWentWrongException;
+
+	public void viewProduct() throws SomethingWentWrongException, NoRecordFoundException;
+
+	void deleteAccount() throws SomethingWentWrongException;
 }
