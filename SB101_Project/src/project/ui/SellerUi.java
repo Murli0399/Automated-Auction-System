@@ -18,10 +18,10 @@ public class SellerUi {
 		System.out.println("	1. View All Products");
 		System.out.println("	2. Add Product");
 		System.out.println("	3. Update Product");
-		System.out.println("	3. View Transactions");
 		System.out.println("	4. Delete Product");
-		System.out.println("	5. Update Personal Detail");
-		System.out.println("	6. Delete Account");
+		System.out.println("	5. View Transactions");
+		System.out.println("	6. Update Personal Detail");
+		System.out.println("	7. Delete Account");
 		System.out.println("	0. Logout");
 
 		System.out.print("	Enter selection : ");
@@ -59,10 +59,8 @@ public class SellerUi {
 		String price = sc.nextLine();
 		System.out.print("Enter Product Quantity : ");
 		String quantity = sc.nextLine();
-		System.out.print("Enter Category Id : ");
-		int cid = sc.nextInt();
 
-		ProductDTO dto = new ProductDTOImpl(name, Double.parseDouble(price), Integer.parseInt(quantity), cid);
+		ProductDTO dto = new ProductDTOImpl(name, Double.parseDouble(price), Integer.parseInt(quantity));
 		SellerDAO dao = new SellerDAOImpl();
 		try {
 			dao.updateProduct(pid, dto);
@@ -174,9 +172,12 @@ public class SellerUi {
 				deleteProduct(sc);
 				break;
 			case 5:
-				updatePersonal(sc);
+//				viewTransaction();
 				break;
 			case 6:
+				updatePersonal(sc);
+				break;
+			case 7:
 				deleteAccount();
 				choice = 0;
 				break;

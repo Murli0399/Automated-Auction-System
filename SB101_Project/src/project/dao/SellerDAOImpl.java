@@ -143,15 +143,14 @@ public class SellerDAOImpl implements SellerDAO {
 
 			conn = DBUtils.getConnectionTodatabase();
 
-			String query = "UPDATE Product SET name = ?, price = ?, quantity = ?, category_id = ? where product_id = ?";
+			String query = "UPDATE Product SET name = ?, price = ?, quantity = ? where product_id = ?";
 
 			PreparedStatement ps = conn.prepareStatement(query);
 
 			ps.setString(1, obj.getName());
 			ps.setDouble(2, obj.getPrice());
 			ps.setInt(3, obj.getQuantity());
-			ps.setInt(4, obj.getCid());
-			ps.setInt(5, pid);
+			ps.setInt(4, pid);
 			ps.executeUpdate();
 
 		} catch (ClassNotFoundException | SQLException ex) {

@@ -15,5 +15,11 @@ public interface BuyerDAO {
 
 	public void viewProduct() throws SomethingWentWrongException, NoRecordFoundException;
 
+	public void viewHistory() throws SomethingWentWrongException, NoRecordFoundException;
+
+	public int checkQuantity(int id) throws SomethingWentWrongException, NoRecordFoundException;
+
+	public void purchaseProduct(int id, int q) throws SomethingWentWrongException, NoRecordFoundException;
+
 	void deleteAccount() throws SomethingWentWrongException;
 }
