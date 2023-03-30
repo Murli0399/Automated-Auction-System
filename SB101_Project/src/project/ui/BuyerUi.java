@@ -15,9 +15,74 @@ public class BuyerUi {
 		System.out.println("	1. View All Products");
 		System.out.println("	2. Purchase a Product");
 		System.out.println("	3. View Purchase History");
-		System.out.println("	5. Update Personal Detail");
-		System.out.println("	6. Delete Account");
+		System.out.println("	4. Update Personal Detail");
+		System.out.println("	5. Delete Account");
 		System.out.println("	0. Logout");
+	}
+
+	static void viewHistory() {
+		BuyerDAO dao = new BuyerDAOImpl();
+		try {
+			dao.viewHistory();
+		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
+
+		}
+	}
+
+	static void purchaseProduct(Scanner sc) {
+
+		System.out.print("Enter Product Id : ");
+		int id = sc.nextInt();
+
+		System.out.print("Enter Quantity : ");
+		int q = sc.nextInt();
+
+		BuyerDAO dao = new BuyerDAOImpl();
+		int quantity = -1;
+		try {
+			quantity = dao.checkQuantity(id);
+		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
+			System.out.println(ex.getMessage());
+		}
+
+		int temp = 0;
+
+		if (quantity == 0) {
+			System.out.println("Unfortunately, the following items from your order are out of stock.");
+		} else if (quantity < q) {
+			System.out.println("Only " + quantity + " Product available in the stock.");
+			System.out.print("Press 1 for continue this quantity else type 0 for Exit : ");
+			temp = sc.nextInt();
+		} else {
+			temp = 1;
+		}
+
+		if (temp == 1) {
+			try {
+				dao.purchaseProduct(id, q);
+				System.out.println("Your Order has been received");
+
+				try {
+					Thread.sleep(5000);
+					System.out.println("CONGRATULATION! Your order has been placed.");
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				System.out.println();
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			} catch (SomethingWentWrongException | NoRecordFoundException ex) {
+				System.out.println(ex.getMessage());
+			}
+		}
+
 	}
 
 	static void viewProduct() {
@@ -101,11 +166,16 @@ public class BuyerUi {
 			case 1:
 				viewProduct();
 				break;
-
-			case 5:
+			case 2:
+				purchaseProduct(sc);
+				break;
+			case 3:
+				viewHistory();
+				break;
+			case 4:
 				updatePersonal(sc);
 				break;
-			case 6:
+			case 5:
 				deleteAccount();
 				choice = 0;
 				break;
