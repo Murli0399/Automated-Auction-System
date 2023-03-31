@@ -5,6 +5,7 @@ import java.util.Scanner;
 import project.colors.ConsoleColors;
 import project.dao.BuyerDAO;
 import project.dao.BuyerDAOImpl;
+import project.dao.StaticVar;
 import project.dto.BuyerDTO;
 import project.dto.BuyerDTOImpl;
 import project.exception.NoRecordFoundException;
@@ -12,12 +13,53 @@ import project.exception.SomethingWentWrongException;
 
 public class BuyerUi {
 	static void displayBuyerMenu() {
+		System.out.println();
 		System.out.println("	1. View All Products");
 		System.out.println("	2. Purchase a Product");
-		System.out.println("	3. View Purchase History");
-		System.out.println("	4. Update Personal Detail");
-		System.out.println("	5. Delete Account");
+		System.out.println("	3. Check Purchase History");
+		System.out.println("	4. View Ongoing Auction");
+		System.out.println("	5. Bid for Product");
+		System.out.println("	6. Check Auction History");
+		System.out.println("	7. Update Personal Detail");
+		System.out.println("	8. Delete Account");
 		System.out.println("	0. Logout");
+	}
+
+	static void auctionHistory() {
+		BuyerDAO dao = new BuyerDAOImpl();
+
+		try {
+			dao.auctionHistory();
+		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out.println(ConsoleColors.RED_BOLD + "	Auction Not Available" + ConsoleColors.RESET);
+		}
+	}
+
+	static void createBid(Scanner sc) {
+		BuyerDAO dao = new BuyerDAOImpl();
+
+		try {
+			dao.createBid();
+			System.out.println();
+			System.out.print(ConsoleColors.CYAN + "		Press 1 for Bid else 0 : " + ConsoleColors.RESET);
+			int x = sc.nextInt();
+
+			if (x == 1) {
+				dao.updateBid(sc);
+			}
+		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out.println(ConsoleColors.RED_BOLD + "	Auction Not Available" + ConsoleColors.RESET);
+		}
+	}
+
+	static void auctionDetails() {
+		BuyerDAO dao = new BuyerDAOImpl();
+
+		try {
+			dao.viewAuction();
+		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out.println(ConsoleColors.RED_BOLD + "	Auction Not Available" + ConsoleColors.RESET);
+		}
 	}
 
 	static void viewHistory() {
@@ -25,33 +67,37 @@ public class BuyerUi {
 		try {
 			dao.viewHistory();
 		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
-
+			System.out.println(ConsoleColors.RED_BOLD + "		You Not Have Any Purchase Product" + ConsoleColors.RESET);
 		}
 	}
 
 	static void purchaseProduct(Scanner sc) {
 
-		System.out.print("Enter Product Id : ");
+		System.out.print("	Enter Product Id : ");
 		int id = sc.nextInt();
 
-		System.out.print("Enter Quantity : ");
+		System.out.print("	Enter Quantity : ");
 		int q = sc.nextInt();
 
 		BuyerDAO dao = new BuyerDAOImpl();
-		int quantity = -1;
+		int quantity = 0;
 		try {
 			quantity = dao.checkQuantity(id);
 		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
-			System.out.println(ex.getMessage());
+			System.out.println(ConsoleColors.RED_BOLD+"		Product Not Found"+ConsoleColors.RESET);
 		}
 
 		int temp = 0;
 
 		if (quantity == 0) {
-			System.out.println("Unfortunately, the following items from your order are out of stock.");
+			System.out.println(ConsoleColors.RED_BOLD
+					+ "		Unfortunately, the following items from your order are out of stock."
+					+ ConsoleColors.RESET);
 		} else if (quantity < q) {
-			System.out.println("Only " + quantity + " Product available in the stock.");
-			System.out.print("Press 1 for continue this quantity else type 0 for Exit : ");
+			System.out.println(ConsoleColors.RED_BOLD + "	Only " + quantity + " Product available in the stock."
+					+ ConsoleColors.RESET);
+			System.out.print(ConsoleColors.CYAN + "		Press 1 for continue this quantity else type 0 for Exit : "
+					+ ConsoleColors.RESET);
 			temp = sc.nextInt();
 		} else {
 			temp = 1;
@@ -60,18 +106,22 @@ public class BuyerUi {
 		if (temp == 1) {
 			try {
 				dao.purchaseProduct(id, q);
-				System.out.println("Your Order has been received");
+				System.out.println(ConsoleColors.GREEN + "		Your Order has been received" + ConsoleColors.RESET);
 
 				try {
-					Thread.sleep(5000);
-					System.out.println("CONGRATULATION! Your order has been placed.");
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					System.out.print(ConsoleColors.CYAN + "		Processing.");
+					Thread.sleep(1000);
+					System.out.print(".");
+					Thread.sleep(1000);
+					System.out.print(".");
+					Thread.sleep(1000);
+					System.out.print(".");
+					Thread.sleep(1000);
+					System.out.println("." + ConsoleColors.RESET);
+					Thread.sleep(1000);
+					System.out.println(ConsoleColors.GREEN + "		Congratulation! Your order has been placed."
+							+ ConsoleColors.RESET);
 
-				System.out.println();
-				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -91,7 +141,7 @@ public class BuyerUi {
 		try {
 			dao.viewProduct();
 		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
-
+			System.out.println(ConsoleColors.RED_BOLD+"		Product Not Found"+ConsoleColors.RESET);
 		}
 
 	}
@@ -113,9 +163,9 @@ public class BuyerUi {
 		BuyerDAO dao = new BuyerDAOImpl();
 		try {
 			dao.registerBuyer(dto);
-			System.out.println("	Registration Successfull");
+			System.out.println(ConsoleColors.GREEN + "		Registration Successfull" + ConsoleColors.RESET);
 		} catch (SomethingWentWrongException ex) {
-
+			System.out.println(ConsoleColors.RED_BOLD + "		Unable to Add Details" + ConsoleColors.RESET);
 		}
 
 	}
@@ -137,9 +187,9 @@ public class BuyerUi {
 		BuyerDAO dao = new BuyerDAOImpl();
 		try {
 			dao.updatePersonal(dto);
-			System.out.println(ConsoleColors.GREEN + "	Details Updated Successfull" + ConsoleColors.RESET);
+			System.out.println(ConsoleColors.GREEN + "		Details Updated Successfull" + ConsoleColors.RESET);
 		} catch (SomethingWentWrongException ex) {
-
+			System.out.println(ConsoleColors.RED_BOLD + "		Unable to Update Details" + ConsoleColors.RESET);
 		}
 	}
 
@@ -147,9 +197,9 @@ public class BuyerUi {
 		BuyerDAO dao = new BuyerDAOImpl();
 		try {
 			dao.deleteAccount();
-			System.out.println(ConsoleColors.GREEN + "	Account Deleted Successfull" + ConsoleColors.RESET);
+			System.out.println(ConsoleColors.GREEN + "		Account Deleted Successfull" + ConsoleColors.RESET);
 		} catch (SomethingWentWrongException ex) {
-
+			System.out.println(ConsoleColors.RED_BOLD + "		Unable to Delete Account" + ConsoleColors.RESET);
 		}
 	}
 
@@ -160,7 +210,7 @@ public class BuyerUi {
 		int choice = 0;
 		do {
 			displayBuyerMenu();
-			System.out.print("	Enter selection : ");
+			System.out.print(ConsoleColors.CYAN + "		Enter Selection : " + ConsoleColors.RESET);
 			choice = sc.nextInt();
 			switch (choice) {
 			case 1:
@@ -173,9 +223,18 @@ public class BuyerUi {
 				viewHistory();
 				break;
 			case 4:
-				updatePersonal(sc);
+				auctionDetails();
 				break;
 			case 5:
+				createBid(sc);
+				break;
+			case 6:
+				auctionHistory();
+				break;
+			case 7:
+				updatePersonal(sc);
+				break;
+			case 8:
 				deleteAccount();
 				choice = 0;
 				break;
@@ -183,7 +242,8 @@ public class BuyerUi {
 				logout();
 				break;
 			default:
-				System.out.println("	Invalid Selection, try again");
+				System.out
+						.println(ConsoleColors.RED_BOLD + "		Invalid Selection, try again" + ConsoleColors.RESET);
 			}
 		} while (choice != 0);
 	}
@@ -196,8 +256,10 @@ public class BuyerUi {
 		BuyerDAO dao = new BuyerDAOImpl();
 		try {
 			dao.login(username, password);
+			System.out.println(
+					ConsoleColors.GREEN_BOLD + "		Welcome " + StaticVar.LoggedInBuyerName + ConsoleColors.RESET);
 		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
-			System.out.println(ex);
+			System.out.println(ConsoleColors.RED + "		Invalid username or password" + ConsoleColors.RESET);
 			return false;
 		}
 		return true;
