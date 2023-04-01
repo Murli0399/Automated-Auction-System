@@ -6,13 +6,81 @@ import project.colors.ConsoleColors;
 
 public class UIMain {
 
+	static void buyerOperations(Scanner sc) {
+		
+		int choice = 0;
+		do {
+			System.out.println();
+			System.out.println("	1. Login");
+			System.out.println("	2. Create Account");
+			System.out.println("	3. Forgat Password");
+			System.out.println("	0. Exit");
+			System.out.print(ConsoleColors.CYAN + "		Enter Selection : " + ConsoleColors.RESET);
+			
+			choice = sc.nextInt();
+
+			switch (choice) {
+			case 1:
+				BuyerUi.buyerLogin(sc);
+				break;
+			case 2:
+				BuyerUi.registerBuyer(sc);
+				break;
+			case 3:
+				BuyerUi.forgatPassword(sc);
+				break;
+			case 0:
+				System.out.println(ConsoleColors.GREEN_BOLD + "		Thank you" + ConsoleColors.RESET);
+				break;
+			default:
+				System.out
+						.println(ConsoleColors.RED + "		Invalid choice. Please try again." + ConsoleColors.RESET);
+			}
+
+		} while (choice != 0);
+	}
+
+	static void sellerOperations(Scanner sc) {
+		
+		int choice = 0;
+		do {
+			System.out.println();
+			System.out.println("	1. Login");
+			System.out.println("	2. Create Account");
+			System.out.println("	3. Forgat Password");
+			System.out.println("	0. Go to Main Menu");
+			System.out.print(ConsoleColors.CYAN + "		Enter Selection : " + ConsoleColors.RESET);
+
+			choice = sc.nextInt();
+
+			switch (choice) {
+			case 1:
+				SellerUi.sellerLogin(sc);
+				break;
+			case 2:
+				SellerUi.registerSeller(sc);
+				break;
+			case 3:
+				SellerUi.forgatPassword(sc);
+				break;
+			case 0:
+				System.out.println(ConsoleColors.GREEN_BOLD + "		Thank you" + ConsoleColors.RESET);
+				break;
+			default:
+				System.out
+						.println(ConsoleColors.RED + "		Invalid choice. Please try again." + ConsoleColors.RESET);
+			}
+
+		} while (choice != 0);
+
+	}
+
 	static void mainMenu() {
+		System.out.println();
 		System.out.println("	1. Login as Admin");
-		System.out.println("	2. Login as Seller");
-		System.out.println("	3. Login as Customer");
-		System.out.println("	4. Register as Seller");
-		System.out.println("	5. Register as Customer");
-		System.out.println("	0. Exit");
+		System.out.println("	2. Seller Operations");
+		System.out.println("	3. Buyer Operations");
+		System.out.println("	0. Go to Main Menu");
 		System.out.println();
 		System.out.print(ConsoleColors.CYAN + "		Enter Selection : " + ConsoleColors.RESET);
 	}
@@ -20,7 +88,7 @@ public class UIMain {
 	public static void main(String[] args) {
 		System.out.println();
 		System.out.println(ConsoleColors.BLUE_BOLD + "		Welcome to Automated Auction System" + ConsoleColors.RESET);
-		System.out.println();
+
 		Scanner sc = new Scanner(System.in);
 
 		int choice = 0;
@@ -35,23 +103,18 @@ public class UIMain {
 				AdminUi.adminLogin(sc);
 				break;
 			case 2:
-				SellerUi.sellerLogin(sc);
+				sellerOperations(sc);
 				break;
 			case 3:
-				BuyerUi.buyerLogin(sc);
-				break;
-			case 4:
-				SellerUi.registerSeller(sc);
-				break;
-			case 5:
-				BuyerUi.registerBuyer(sc);
+				buyerOperations(sc);
 				break;
 			case 0:
 				System.out.println(
 						ConsoleColors.GREEN_BOLD + "		Thank you for using our Application" + ConsoleColors.RESET);
 				break;
 			default:
-				System.out.println(ConsoleColors.RED + "		Invalid choice. Please try again." + ConsoleColors.RESET);
+				System.out
+						.println(ConsoleColors.RED + "		Invalid choice. Please try again." + ConsoleColors.RESET);
 			}
 
 		} while (choice != 0);

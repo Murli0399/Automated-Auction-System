@@ -33,4 +33,6 @@ public interface BuyerDAO {
 
 	public void updateBid(Scanner sc) throws SomethingWentWrongException, NoRecordFoundException;
 
+	public void forgatPassword(Scanner sc) throws SomethingWentWrongException, NoRecordFoundException;
+
 }
