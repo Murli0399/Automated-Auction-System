@@ -11,6 +11,7 @@ import project.exception.SomethingWentWrongException;
 
 public class AdminUi {
 	static void displayAdminMenu() {
+		System.out.println();
 		System.out.println("	1. View All User");
 		System.out.println("	2. View All Product");
 		System.out.println("	3. View Sold Product");
@@ -22,6 +23,60 @@ public class AdminUi {
 		System.out.println("	0. Logout");
 		System.out.println();
 		System.out.print(ConsoleColors.CYAN + "		Enter your Selection : " + ConsoleColors.RESET);
+	}
+
+	static void viewTransactionById(Scanner sc) {
+		System.out.print(ConsoleColors.CYAN + "		Enter Transaction Id : " + ConsoleColors.RESET);
+		int tid = sc.nextInt();
+		AdminDAO dao = new AdminDAOImpl();
+
+		try {
+			dao.viewTransactionById(tid);
+		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out
+					.println(ConsoleColors.RED + "		Transaction Not Available of this ID" + ConsoleColors.RESET);
+		}
+	}
+
+	static void viewTransaction(Scanner sc) {
+		AdminDAO dao = new AdminDAOImpl();
+
+		try {
+			dao.viewTransaction();
+			System.out.println(ConsoleColors.CYAN + "		Press 1 for filter by Date Range" + ConsoleColors.RESET);
+			System.out.println(
+					ConsoleColors.CYAN + "		Press 2 for filter Price in Ascending Order" + ConsoleColors.RESET);
+			System.out.println(
+					ConsoleColors.CYAN + "		Press 3 for filter Price in Descending Order" + ConsoleColors.RESET);
+			System.out.println(ConsoleColors.CYAN + "		Press 0 for Exit");
+			System.out.print(ConsoleColors.CYAN + "		Enter Selection : " + ConsoleColors.RESET);
+
+			int x = sc.nextInt();
+			if (x == 1) {
+				System.out.print(ConsoleColors.CYAN + "		Enter Start Date (YYYY-MM-DD) : " + ConsoleColors.RESET);
+				LocalDate startDate = LocalDate.parse(sc.next());
+				System.out.print(ConsoleColors.CYAN + "		Enter End Date (YYYY-MM-DD) : " + ConsoleColors.RESET);
+				LocalDate endDate = LocalDate.parse(sc.next());
+				dao.filterTransactionByDateRange(startDate, endDate);
+			} else if (x == 2) {
+				dao.filterTransactionAsc();
+				System.out.print(ConsoleColors.CYAN + "		Press 1 for Descending Order : " + ConsoleColors.RESET);
+				int z = sc.nextInt();
+				if (z == 1) {
+					dao.filterTransactionDesc();
+				}
+			} else if (x == 3) {
+				dao.filterTransactionDesc();
+				System.out.print(ConsoleColors.CYAN + "		Press 1 for Ascending Order : " + ConsoleColors.RESET);
+				int z = sc.nextInt();
+				if (z == 1) {
+					dao.filterTransactionAsc();
+				}
+			}
+
+		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out.println(ConsoleColors.RED + "		Transaction Not Available" + ConsoleColors.RESET);
+		}
 	}
 
 	static void viewAuctionHistory() {
@@ -140,9 +195,20 @@ public class AdminUi {
 			case 5:
 				viewAuctionHistory();
 				break;
-
+			case 6:
+				viewTransaction(sc);
+				break;
+			case 7:
+				viewTransactionById(sc);
+				break;
 			case 0:
-				System.out.println(ConsoleColors.GREEN + "		Thank you " + ConsoleColors.RESET);
+				System.out.println(ConsoleColors.GREEN + "		Logout Successfull " + ConsoleColors.RESET);
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				break;
 			default:
 				System.out.println(

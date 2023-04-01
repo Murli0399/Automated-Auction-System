@@ -5,6 +5,7 @@ import java.util.Scanner;
 import project.colors.ConsoleColors;
 import project.dao.SellerDAO;
 import project.dao.SellerDAOImpl;
+import project.dao.StaticVar;
 import project.dto.ProductDTO;
 import project.dto.ProductDTOImpl;
 import project.dto.SellerDTO;
@@ -15,34 +16,46 @@ import project.exception.SomethingWentWrongException;
 public class SellerUi {
 
 	static void displaySellerMenu() {
+		System.out.println();
 		System.out.println("	1. View All Products");
 		System.out.println("	2. Add Product");
 		System.out.println("	3. Update Product");
 		System.out.println("	4. Delete Product");
 		System.out.println("	5. View Transactions");
-		System.out.println("	6. Update Personal Detail");
+		System.out.println("	6. Update Your Profile");
 		System.out.println("	7. Delete Account");
 		System.out.println("	0. Logout");
 
-		System.out.print("	Enter selection : ");
+		System.out.print(ConsoleColors.CYAN + "		Enter Selection : " + ConsoleColors.RESET);
+	}
+
+	static void forgatPassword(Scanner sc) {
+
+		SellerDAO dao = new SellerDAOImpl();
+		try {
+			dao.forgatPassword(sc);
+		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
+			System.out.println(ConsoleColors.RED_BOLD + "		UserName Not Found" + ConsoleColors.RESET);
+		}
+
 	}
 
 	static void addProduct(Scanner sc) {
 		sc.nextLine();
-		System.out.print("Enter Product Name : ");
+		System.out.print("	Enter Product Name : ");
 		String name = sc.nextLine();
-		System.out.print("Enter Product Price : ");
+		System.out.print("	Enter Product Price : ");
 		String price = sc.nextLine();
-		System.out.print("Enter Product Quantity : ");
+		System.out.print("	Enter Product Quantity : ");
 		String quantity = sc.nextLine();
-		System.out.print("Enter Category Id : ");
+		System.out.print("	Enter Category Id : ");
 		int cid = sc.nextInt();
 
 		ProductDTO dto = new ProductDTOImpl(name, Double.parseDouble(price), Integer.parseInt(quantity), cid);
 		SellerDAO dao = new SellerDAOImpl();
 		try {
 			dao.addProduct(dto);
-			System.out.println(ConsoleColors.GREEN + "Product Added Successful" + ConsoleColors.RESET);
+			System.out.println(ConsoleColors.GREEN + "		Product Added Successful" + ConsoleColors.RESET);
 		} catch (SomethingWentWrongException ex) {
 
 		}
@@ -50,33 +63,33 @@ public class SellerUi {
 	}
 
 	static void updateProduct(Scanner sc) {
-		System.out.print("Enter Product Id : ");
+		System.out.print("	Enter Product Id : ");
 		int pid = sc.nextInt();
 		sc.nextLine();
-		System.out.print("Enter Product Name : ");
+		System.out.print("	Enter Product Name : ");
 		String name = sc.nextLine();
-		System.out.print("Enter Product Price : ");
+		System.out.print("	Enter Product Price : ");
 		String price = sc.nextLine();
-		System.out.print("Enter Product Quantity : ");
+		System.out.print("	Enter Product Quantity : ");
 		String quantity = sc.nextLine();
 
 		ProductDTO dto = new ProductDTOImpl(name, Double.parseDouble(price), Integer.parseInt(quantity));
 		SellerDAO dao = new SellerDAOImpl();
 		try {
 			dao.updateProduct(pid, dto);
-			System.out.println(ConsoleColors.GREEN + "Product Updated Successful" + ConsoleColors.RESET);
+			System.out.println(ConsoleColors.GREEN + "		Product Updated Successful" + ConsoleColors.RESET);
 		} catch (SomethingWentWrongException ex) {
 
 		}
 	}
 
 	static void deleteProduct(Scanner sc) {
-		System.out.print("Enter Product Id : ");
+		System.out.print("	Enter Product Id : ");
 		int pid = sc.nextInt();
 		SellerDAO dao = new SellerDAOImpl();
 		try {
 			dao.deleteProduct(pid);
-			System.out.println(ConsoleColors.GREEN + "Product Deleted Successful" + ConsoleColors.RESET);
+			System.out.println(ConsoleColors.GREEN_BOLD + "		Product Deleted Successful" + ConsoleColors.RESET);
 		} catch (SomethingWentWrongException ex) {
 
 		}
@@ -88,7 +101,7 @@ public class SellerUi {
 		try {
 			dao.viewProduct();
 		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
-
+			System.out.println(ConsoleColors.RED_BOLD + "		You Not Have Any Product" + ConsoleColors.RESET);
 		}
 
 	}
@@ -110,7 +123,7 @@ public class SellerUi {
 		SellerDAO dao = new SellerDAOImpl();
 		try {
 			dao.registerSeller(dto);
-			System.out.println(ConsoleColors.GREEN + "	Registration Successfull" + ConsoleColors.RESET);
+			System.out.println(ConsoleColors.GREEN_BOLD + "		Registration Successfull" + ConsoleColors.RESET);
 		} catch (SomethingWentWrongException ex) {
 
 		}
@@ -134,7 +147,8 @@ public class SellerUi {
 		SellerDAO dao = new SellerDAOImpl();
 		try {
 			dao.updatePersonal(dto);
-			System.out.println(ConsoleColors.GREEN + "	Details Updated Successfull" + ConsoleColors.RESET);
+			System.out.println(ConsoleColors.GREEN_BOLD + "		You Have Successfully Updated Your Profile"
+					+ ConsoleColors.RESET);
 		} catch (SomethingWentWrongException ex) {
 
 		}
@@ -144,12 +158,22 @@ public class SellerUi {
 		SellerDAO dao = new SellerDAOImpl();
 		try {
 			dao.deleteAccount();
-			System.out.println(ConsoleColors.GREEN + "	Account Deleted Successfull" + ConsoleColors.RESET);
+			System.out.println(
+					ConsoleColors.GREEN + "		Your Account Has Been Successfully Deleted" + ConsoleColors.RESET);
 		} catch (SomethingWentWrongException ex) {
 
 		}
 	}
 
+	static void viewTransaction() {
+		SellerDAO dao = new SellerDAOImpl();
+		try {
+			dao.viewTransaction();
+		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
+			System.out.println(ConsoleColors.RED_BOLD + "		You Not Have Any Sold Product" + ConsoleColors.RESET);
+		}
+	}
+	
 	static void sellerLogin(Scanner sc) {
 		if (!SellerUi.login(sc))
 			return;
@@ -172,7 +196,7 @@ public class SellerUi {
 				deleteProduct(sc);
 				break;
 			case 5:
-//				viewTransaction();
+				viewTransaction();
 				break;
 			case 6:
 				updatePersonal(sc);
@@ -183,10 +207,12 @@ public class SellerUi {
 				break;
 
 			case 0:
-				SellerUi.logout();
+				logout();
+				System.out.print(ConsoleColors.GREEN + "		Logout Successful" + ConsoleColors.RESET);
 				break;
 			default:
-				System.out.println(ConsoleColors.RED + "	Invalid choice. Please try again." + ConsoleColors.RESET);
+				System.out
+						.println(ConsoleColors.RED + "		Invalid choice. Please try again." + ConsoleColors.RESET);
 			}
 		} while (choice != 0);
 	}
@@ -199,8 +225,10 @@ public class SellerUi {
 		SellerDAO dao = new SellerDAOImpl();
 		try {
 			dao.login(username, password);
+			System.out.println(
+					ConsoleColors.GREEN_BOLD + "		Welcome " + StaticVar.LoggedInSellerName + ConsoleColors.RESET);
 		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
-			System.out.println("	Invalid username or password");
+			System.out.println(ConsoleColors.RED + "		Invalid username or password" + ConsoleColors.RESET);
 			return false;
 		}
 		return true;

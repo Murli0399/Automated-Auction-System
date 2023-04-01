@@ -1,5 +1,7 @@
 package project.dao;
 
+import java.util.Scanner;
+
 import project.dto.ProductDTO;
 import project.dto.SellerDTO;
 import project.exception.NoRecordFoundException;
@@ -23,4 +25,8 @@ public interface SellerDAO {
 	public void deleteProduct(int pid) throws SomethingWentWrongException;
 
 	public void deleteAccount() throws SomethingWentWrongException;
+
+	public void forgatPassword(Scanner sc) throws SomethingWentWrongException, NoRecordFoundException;
+
+	public void viewTransaction() throws SomethingWentWrongException, NoRecordFoundException;
 }

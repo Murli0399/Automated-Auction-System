@@ -323,29 +323,29 @@ public class AdminDAOImpl implements AdminDAO {
 
 			while (rs.next()) {
 
-				System.out.print("Auction Id = " + rs.getInt(1));
-				System.out.print(" Seller Id = " + rs.getInt(2));
-				System.out.print(" Product Id = " + rs.getInt(3));
-				System.out.print(" Price = " + rs.getDouble(4));
+				System.out.print("	Auction Id : " + rs.getInt(1));
+				System.out.print(", Seller Id : " + rs.getInt(2));
+				System.out.print(", Product Id : " + rs.getInt(3));
+				System.out.print(", Price : " + rs.getDouble(4));
 
 				LocalDate nowDate = LocalDate.now();
 				LocalDate aucDate = rs.getDate(5).toLocalDate();
 
-				System.out.print(" Date = " + aucDate);
+				System.out.print(", Date : " + aucDate);
 
 				LocalTime nowTime = LocalTime.now();
 				LocalTime aucStartTime = rs.getTime(6).toLocalTime();
 				LocalTime aucEndTime = rs.getTime(7).toLocalTime();
 
-				System.out.print(" Start Time = " + aucStartTime);
-				System.out.print(" End Time = " + aucEndTime);
+				System.out.print(", Start Time : " + aucStartTime);
+				System.out.print(", End Time : " + aucEndTime + ",");
 
 				int buyerId = rs.getInt(8);
 
 				if (buyerId == 0) {
-					System.out.print(ConsoleColors.RED + " Not Purchased" + ConsoleColors.RESET);
+					System.out.print(ConsoleColors.RED + " Not Purchased," + ConsoleColors.RESET);
 				} else {
-					System.out.print(ConsoleColors.GREEN + " Buyer Id = " + buyerId + ConsoleColors.RESET);
+					System.out.print(ConsoleColors.GREEN + " Buyer Id : " + buyerId + "," + ConsoleColors.RESET);
 				}
 
 				if (aucDate.compareTo(nowDate) == 0) {
@@ -367,6 +367,183 @@ public class AdminDAOImpl implements AdminDAO {
 
 		} catch (ClassNotFoundException | SQLException ex) {
 			System.out.println(ex.getMessage());
+		} finally {
+			try {
+				DBUtils.closeConnection(conn);
+			} catch (SQLException ex) {
+
+			}
+		}
+	}
+
+	@Override
+	public void viewTransaction() throws SomethingWentWrongException, NoRecordFoundException {
+		Connection conn = null;
+		try {
+			conn = DBUtils.getConnectionTodatabase();
+			String query = "SELECT t.transaction_id, p.name, t.price, t.quantity, t.transaction_date, t.seller_id, t.buyer_id from transaction t join product p ON t.item_id = p.product_id where t.is_deleted = 0";
+			PreparedStatement ps = conn.prepareStatement(query);
+
+			ResultSet rs = ps.executeQuery();
+			if (DBUtils.isResultSetEmpty(rs)) {
+				throw new NoRecordFoundException("	Product Not Found");
+			}
+
+			while (rs.next()) {
+				System.out.print("	Transaction Id : " + rs.getInt(1));
+				System.out.print(", Product Name : " + rs.getString(2));
+				System.out.print(", Price : " + rs.getDouble(3));
+				System.out.print(", Quantity : " + rs.getInt(4));
+				System.out.print(", Transaction Date : " + rs.getDate(5));
+				System.out.print(", Seller Id : " + rs.getInt(6));
+				System.out.print(", Buyer Id : " + rs.getInt(7));
+				System.out.println();
+			}
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			throw new SomethingWentWrongException("View History");
+		} finally {
+			try {
+				DBUtils.closeConnection(conn);
+			} catch (SQLException ex) {
+
+			}
+		}
+	}
+
+	@Override
+	public void filterTransactionByDateRange(LocalDate startDate, LocalDate endDate)
+			throws SomethingWentWrongException, NoRecordFoundException {
+		Connection conn = null;
+		try {
+			conn = DBUtils.getConnectionTodatabase();
+			String query = "SELECT t.transaction_id, p.name, t.price, t.quantity, t.transaction_date, t.seller_id, t.buyer_id from transaction t join product p ON t.item_id = p.product_id where t.transaction_date >= ? AND t.transaction_date <= ? AND t.is_deleted = 0";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setDate(1, Date.valueOf(startDate));
+			ps.setDate(2, Date.valueOf(endDate));
+			ResultSet rs = ps.executeQuery();
+			if (DBUtils.isResultSetEmpty(rs)) {
+				throw new NoRecordFoundException("	Product Not Found");
+			}
+
+			while (rs.next()) {
+				System.out.print("	Transaction Id : " + rs.getInt(1));
+				System.out.print(", Product Name : " + rs.getString(2));
+				System.out.print(", Price : " + rs.getDouble(3));
+				System.out.print(", Quantity : " + rs.getInt(4));
+				System.out.print(", Transaction Date : " + rs.getDate(5));
+				System.out.print(", Seller Id : " + rs.getInt(6));
+				System.out.print(", Buyer Id : " + rs.getInt(7));
+				System.out.println();
+			}
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			throw new SomethingWentWrongException("View History");
+		} finally {
+			try {
+				DBUtils.closeConnection(conn);
+			} catch (SQLException ex) {
+
+			}
+		}
+	}
+
+	@Override
+	public void filterTransactionAsc() throws SomethingWentWrongException, NoRecordFoundException {
+		Connection conn = null;
+		try {
+			conn = DBUtils.getConnectionTodatabase();
+			String query = "SELECT t.transaction_id, p.name, t.price, t.quantity, t.transaction_date, t.seller_id, t.buyer_id from transaction t join product p ON t.item_id = p.product_id where t.is_deleted = 0 order by t.price asc";
+			PreparedStatement ps = conn.prepareStatement(query);
+
+			ResultSet rs = ps.executeQuery();
+			if (DBUtils.isResultSetEmpty(rs)) {
+				throw new NoRecordFoundException("	Product Not Found");
+			}
+
+			while (rs.next()) {
+				System.out.print("	Transaction Id : " + rs.getInt(1));
+				System.out.print(", Product Name : " + rs.getString(2));
+				System.out.print(", Price : " + rs.getDouble(3));
+				System.out.print(", Quantity : " + rs.getInt(4));
+				System.out.print(", Transaction Date : " + rs.getDate(5));
+				System.out.print(", Seller Id : " + rs.getInt(6));
+				System.out.print(", Buyer Id : " + rs.getInt(7));
+				System.out.println();
+			}
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			throw new SomethingWentWrongException("View History");
+		} finally {
+			try {
+				DBUtils.closeConnection(conn);
+			} catch (SQLException ex) {
+
+			}
+		}
+	}
+
+	@Override
+	public void filterTransactionDesc() throws SomethingWentWrongException, NoRecordFoundException {
+		Connection conn = null;
+		try {
+			conn = DBUtils.getConnectionTodatabase();
+			String query = "SELECT t.transaction_id, p.name, t.price, t.quantity, t.transaction_date, t.seller_id, t.buyer_id from transaction t join product p ON t.item_id = p.product_id where t.is_deleted = 0 order by t.price desc";
+			PreparedStatement ps = conn.prepareStatement(query);
+
+			ResultSet rs = ps.executeQuery();
+			if (DBUtils.isResultSetEmpty(rs)) {
+				throw new NoRecordFoundException("	Product Not Found");
+			}
+
+			while (rs.next()) {
+				System.out.print("	Transaction Id : " + rs.getInt(1));
+				System.out.print(", Product Name : " + rs.getString(2));
+				System.out.print(", Price : " + rs.getDouble(3));
+				System.out.print(", Quantity : " + rs.getInt(4));
+				System.out.print(", Transaction Date : " + rs.getDate(5));
+				System.out.print(", Seller Id : " + rs.getInt(6));
+				System.out.print(", Buyer Id : " + rs.getInt(7));
+				System.out.println();
+			}
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			throw new SomethingWentWrongException("View History");
+		} finally {
+			try {
+				DBUtils.closeConnection(conn);
+			} catch (SQLException ex) {
+
+			}
+		}
+	}
+
+	@Override
+	public void viewTransactionById(int tid) throws SomethingWentWrongException, NoRecordFoundException {
+		Connection conn = null;
+		try {
+			conn = DBUtils.getConnectionTodatabase();
+			String query = "SELECT t.transaction_id, p.name, t.price, t.quantity, t.transaction_date, t.seller_id, t.buyer_id from transaction t join product p ON t.item_id = p.product_id where t.transaction_id = ? AND t.is_deleted = 0";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, tid);
+			ResultSet rs = ps.executeQuery();
+			if (DBUtils.isResultSetEmpty(rs)) {
+				throw new NoRecordFoundException("	Product Not Found");
+			}
+
+			while (rs.next()) {
+				System.out.print("	Transaction Id : " + rs.getInt(1));
+				System.out.print(", Product Name : " + rs.getString(2));
+				System.out.print(", Price : " + rs.getDouble(3));
+				System.out.print(", Quantity : " + rs.getInt(4));
+				System.out.print(", Transaction Date : " + rs.getDate(5));
+				System.out.print(", Seller Id : " + rs.getInt(6));
+				System.out.print(", Buyer Id : " + rs.getInt(7));
+				System.out.println();
+			}
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			throw new SomethingWentWrongException("View History");
 		} finally {
 			try {
 				DBUtils.closeConnection(conn);

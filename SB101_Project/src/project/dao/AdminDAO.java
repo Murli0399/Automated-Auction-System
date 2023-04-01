@@ -13,6 +13,14 @@ public interface AdminDAO {
 
 	public void viewProduct() throws SomethingWentWrongException, NoRecordFoundException;
 
+	public void viewTransaction() throws SomethingWentWrongException, NoRecordFoundException;
+
+	public void filterTransactionAsc() throws SomethingWentWrongException, NoRecordFoundException;
+
+	public void filterTransactionDesc() throws SomethingWentWrongException, NoRecordFoundException;
+
+	public void viewTransactionById(int tid) throws SomethingWentWrongException, NoRecordFoundException;
+
 	public void viewAuctionHistory() throws SomethingWentWrongException, NoRecordFoundException;
 
 	public void viewSoldProduct() throws SomethingWentWrongException, NoRecordFoundException;
@@ -24,6 +32,9 @@ public interface AdminDAO {
 	public int checkQuantity(int id) throws SomethingWentWrongException, NoRecordFoundException;
 
 	public void createAuction(int id, LocalDate date, LocalTime st, int du)
+			throws SomethingWentWrongException, NoRecordFoundException;
+
+	public void filterTransactionByDateRange(LocalDate startDate, LocalDate endDate)
 			throws SomethingWentWrongException, NoRecordFoundException;
 
 }

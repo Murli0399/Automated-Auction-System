@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Random;
 import java.util.Scanner;
 
 import project.colors.ConsoleColors;
@@ -76,7 +77,6 @@ public class BuyerDAOImpl implements BuyerDAO {
 			}
 		}
 	}
-	
 
 	public void logout() {
 		StaticVar.LoggedInBuyerId = 0;
@@ -141,7 +141,6 @@ public class BuyerDAOImpl implements BuyerDAO {
 			}
 		}
 	}
-	
 
 	@Override
 	public void deleteAccount() throws SomethingWentWrongException {
@@ -167,7 +166,6 @@ public class BuyerDAOImpl implements BuyerDAO {
 			}
 		}
 	}
-	
 
 	@Override
 	public int checkQuantity(int id) throws SomethingWentWrongException, NoRecordFoundException {
@@ -228,7 +226,7 @@ public class BuyerDAOImpl implements BuyerDAO {
 
 			quantity = quantity - q;
 
-			String query1 = "UPDATE product SET quantity = ? where product_id = ?";
+			String query1 = "UPDATE product SET quantity = ?, sold_status = 1 where product_id = ?";
 			PreparedStatement ps1 = conn.prepareStatement(query1);
 			ps1.setInt(1, quantity);
 			ps1.setInt(2, id);
@@ -558,6 +556,101 @@ public class BuyerDAOImpl implements BuyerDAO {
 
 		} catch (ClassNotFoundException | SQLException ex) {
 			throw new SomethingWentWrongException("Auction History Not Available");
+		} finally {
+			try {
+				DBUtils.closeConnection(conn);
+			} catch (SQLException ex) {
+
+			}
+		}
+	}
+
+	@Override
+	public void forgatPassword(Scanner sc) throws SomethingWentWrongException, NoRecordFoundException {
+		Connection conn = null;
+		System.out.print(ConsoleColors.CYAN + "		Enter UserName : " + ConsoleColors.RESET);
+		String username = sc.next();
+
+		System.out.print(ConsoleColors.CYAN + "		Enter Mobile Number : " + ConsoleColors.RESET);
+		String mobile = sc.next();
+		try {
+			conn = DBUtils.getConnectionTodatabase();
+			String query = "SELECT buyerId FROM buyer WHERE username = ? AND mobileNo = ? AND is_deleted = 0";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1, username);
+			ps.setString(2, mobile);
+			ResultSet rs = ps.executeQuery();
+			if (DBUtils.isResultSetEmpty(rs)) {
+				throw new NoRecordFoundException("	Invalid username");
+			}
+
+			rs.next();
+			int buyerId = rs.getInt(1);
+
+			System.out.print(ConsoleColors.CYAN + "		Enter New Password : " + ConsoleColors.RESET);
+			String psw = sc.next();
+
+			System.out.print(ConsoleColors.CYAN + "		Confirm Password : " + ConsoleColors.RESET);
+			String newPsw = sc.next();
+
+			if (!psw.equals(newPsw)) {
+				System.out.println(
+						ConsoleColors.RED_BOLD + "		Password and Confirm Password Not Match" + ConsoleColors.RESET);
+			} else {
+				Random random = new Random();
+				String otp = String.format("%04d", random.nextInt(10000));
+				System.out.print(ConsoleColors.CYAN + "		OTP is sent to Your Mobile : " + ConsoleColors.YELLOW);
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.print(otp);
+				System.out.println("		" + ConsoleColors.RESET);
+				System.out.print(ConsoleColors.CYAN + "		Enter Your OTP : " + ConsoleColors.RESET);
+				String newOtp = sc.next();
+				int i = 0;
+				while (!otp.equals(newOtp) && i < 2) {
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					System.out.println(ConsoleColors.RED + "		Sorry! Invalid OTP" + ConsoleColors.RESET);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					System.out.print(ConsoleColors.CYAN + "		Please Enter Correct OTP : " + ConsoleColors.RESET);
+					newOtp = sc.next();
+					i++;
+				}
+				if (!otp.equals(newOtp)) {
+					System.out.print(ConsoleColors.RED + "		OTP Dose Not Match" + ConsoleColors.RESET);
+				} else {
+					String query1 = "Update buyer SET password = ? WHERE buyerId = ?";
+					PreparedStatement ps1 = conn.prepareStatement(query1);
+					ps1.setString(1, psw);
+					ps1.setInt(2, buyerId);
+					int x = ps1.executeUpdate();
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					if (x > 0) {
+						System.out.println(
+								ConsoleColors.GREEN + "		Password Updated Successful" + ConsoleColors.RESET);
+					} else {
+						System.out.print(ConsoleColors.RED + "		Password Not Changed" + ConsoleColors.RESET);
+					}
+				}
+			}
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			System.out.println(ex.getMessage());
 		} finally {
 			try {
 				DBUtils.closeConnection(conn);

@@ -23,6 +23,18 @@ public class BuyerUi {
 		System.out.println("	7. Update Personal Detail");
 		System.out.println("	8. Delete Account");
 		System.out.println("	0. Logout");
+		System.out.print(ConsoleColors.CYAN + "		Enter Selection : " + ConsoleColors.RESET);
+	}
+	
+	static void forgatPassword(Scanner sc) {
+		
+		BuyerDAO dao = new BuyerDAOImpl();
+		try {
+			dao.forgatPassword(sc);			
+		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
+			System.out.println(ConsoleColors.RED_BOLD + "		UserName Not Found" + ConsoleColors.RESET);
+		}
+		
 	}
 
 	static void auctionHistory() {
@@ -210,7 +222,6 @@ public class BuyerUi {
 		int choice = 0;
 		do {
 			displayBuyerMenu();
-			System.out.print(ConsoleColors.CYAN + "		Enter Selection : " + ConsoleColors.RESET);
 			choice = sc.nextInt();
 			switch (choice) {
 			case 1:
@@ -240,6 +251,7 @@ public class BuyerUi {
 				break;
 			case 0:
 				logout();
+				System.out.print(ConsoleColors.GREEN + "		Logout Successful" + ConsoleColors.RESET);
 				break;
 			default:
 				System.out
