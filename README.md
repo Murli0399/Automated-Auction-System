@@ -36,19 +36,28 @@ the Auction. Various buyers and sellers are registered in the Auction company.
 ## 2. Seller
 
 - The seller can register himself or herself as a seller.
-- The seller can create a list of items to sell.
-- The seller can add new items to the list and update item price, quantity, etc.
-- The seller can remove items from the list.
-- The seller can view the sold Item history.
+- The seller can update personal details.
+- The seller can add new Product to sell.
+- The seller can remove Product from the system.
+- The seller can view the sold Product history.
+- The seller can view Transaction.
+- The seller can delete account.
+- Login / Logout
 
 ## 3. Buyer
 
 - Buyer can register himself or herself as Buyer.
-- Buyers can Search and view Items by category.
-- Buyers can select and view all the buyers and their Items category-wise.
-- Buyers can Selects Items to buy.
-
-
+- Buyer can update personal details.
+- Buyer can Search and view Items by category.
+- Buyer can select and view all the buyers and their Items category-wise.
+- Buyer can purchase Product.
+- Buyer can see Purchase History.
+- Buyer can Refund Product.
+- Buyer can view Transactions of self.
+- Buyer can view Ongoing Auction.
+- Buyer can create bid for auction.
+- Buyer can also view auction history.
+- Buyer can delete himself account.
 
 # Technology used 
 
