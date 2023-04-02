@@ -14,7 +14,7 @@ public class UIMain {
 			System.out.println("	1. Login");
 			System.out.println("	2. Create Account");
 			System.out.println("	3. Forgat Password");
-			System.out.println("	0. Exit");
+			System.out.println("	0. Go to Main Menu");
 			System.out.print(ConsoleColors.CYAN + "		Enter Selection : " + ConsoleColors.RESET);
 			
 			choice = sc.nextInt();
@@ -77,18 +77,19 @@ public class UIMain {
 
 	static void mainMenu() {
 		System.out.println();
+		System.out.println(ConsoleColors.YELLOW_BOLD+"		Main Menu"+ConsoleColors.RESET);
 		System.out.println("	1. Login as Admin");
 		System.out.println("	2. Seller Operations");
 		System.out.println("	3. Buyer Operations");
-		System.out.println("	0. Go to Main Menu");
+		System.out.println("	0. Exit");
 		System.out.println();
 		System.out.print(ConsoleColors.CYAN + "		Enter Selection : " + ConsoleColors.RESET);
 	}
 
 	public static void main(String[] args) {
 		System.out.println();
-		System.out.println(ConsoleColors.BLUE_BOLD + "		Welcome to Automated Auction System" + ConsoleColors.RESET);
-
+		System.out.println(ConsoleColors.PURPLE_BOLD + "		Welcome to Automated Auction System" + ConsoleColors.RESET);
+		
 		Scanner sc = new Scanner(System.in);
 
 		int choice = 0;

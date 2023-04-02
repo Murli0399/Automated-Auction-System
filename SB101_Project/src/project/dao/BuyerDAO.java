@@ -1,8 +1,10 @@
 package project.dao;
 
+import java.util.List;
 import java.util.Scanner;
 
 import project.dto.BuyerDTO;
+import project.dto.ProductDTO;
 import project.exception.NoRecordFoundException;
 import project.exception.SomethingWentWrongException;
 
@@ -19,9 +21,13 @@ public interface BuyerDAO {
 
 	public void viewHistory() throws SomethingWentWrongException, NoRecordFoundException;
 
+	public void viewRefundHistory() throws SomethingWentWrongException, NoRecordFoundException;
+
+	public void refundProduct(Scanner sc) throws SomethingWentWrongException, NoRecordFoundException;
+
 	public int checkQuantity(int id) throws SomethingWentWrongException, NoRecordFoundException;
 
-	public void purchaseProduct(int id, int q) throws SomethingWentWrongException, NoRecordFoundException;
+	public List<ProductDTO> purchaseProduct(int id, int q) throws SomethingWentWrongException, NoRecordFoundException;
 
 	void deleteAccount() throws SomethingWentWrongException;
 

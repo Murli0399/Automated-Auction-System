@@ -13,6 +13,8 @@ public interface AdminDAO {
 
 	public void viewProduct() throws SomethingWentWrongException, NoRecordFoundException;
 
+	public void viewRefundProduct() throws SomethingWentWrongException, NoRecordFoundException;
+
 	public void viewTransaction() throws SomethingWentWrongException, NoRecordFoundException;
 
 	public void filterTransactionAsc() throws SomethingWentWrongException, NoRecordFoundException;
