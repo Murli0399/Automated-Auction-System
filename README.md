@@ -9,7 +9,11 @@ the Auction. Various buyers and sellers are registered in the Auction company.
 
 > Build Automated Auction system application during the construct week at [Masai School](https://masaischool.com/). Completed the project within five days.
 
-<img src = "SB101_mysql.png" />
+
+# ER Diagram
+
+<p style="text-align:center"><img src="SB101_mysql.png"></p>
+
 
 # Users of the System
 
