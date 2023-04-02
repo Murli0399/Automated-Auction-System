@@ -1,13 +1,17 @@
 # Automated Auction system
 
 
-> An auction is a system of buying and selling goods and services by offering them for bidding - allowing people to bid and selling to the highest bidder. 
+> An automated Auction System is an Application Software that is used for the buying and
+selling of products. This software can be used by the auction companies who arrange
+the Auction. Various buyers and sellers are registered in the Auction company.
 
-> Automated Auction system is a console based application.
+> Automated Auction system is a console based Application.
 
-> Build Automated Auction system application during the construct week at [Masai School](https://masaischool.com/). Completed the project within six days.
+> Build Automated Auction system application during the construct week at [Masai School](https://masaischool.com/). Completed the project within five days.
 
-# Users
+<img src = "" />
+
+# Users of the System
 
 - Administrator
 - Seller
@@ -17,7 +21,13 @@
 
 - An administrator can view the registered buyer and Seller list.
 - An administrator can view all product list.
-- An administrator can create an auction and can update auction history.
+- An administrator can create an auction.
+- An Administrator can auction history.
+- An Administrator can see all items to be sold and all items already sold.
+- An Administrator can see items ny category.
+- An Administrator can view all transactions.
+- An Administrator can search transactions for a date range.
+- An Administrator can search transactions by transaction id.
 
 ## 2. Seller
 
