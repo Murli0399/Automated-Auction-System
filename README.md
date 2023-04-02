@@ -7,12 +7,15 @@
 
 > Build Automated Auction system application during the construct week at [Masai School](https://masaischool.com/). Completed the project within six days.
 
-# Features
+# Users
+
+- Administrator
+- Seller
+- Buyer
 
 ## 1. Administrator
 
 - An administrator can view the registered buyer and Seller list.
-- An administrator can view the daily selling report.
 - An administrator can view all product list.
 - An administrator can create an auction and can update auction history.
 
@@ -35,8 +38,8 @@
 
 # Technology used 
 
-- Java
+- Java 
 - MySQL
-- Git & GitHub
+- JDBC
 
-## 👉 [Click here](https://drive.google.com/file/d/138zucf-GfcXLQAQPi_ETVUfblwAsP4Ll/view) to go through a detailed explanation of this application.
+
