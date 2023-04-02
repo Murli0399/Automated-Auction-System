@@ -7,11 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-
 import project.colors.ConsoleColors;
 import project.dto.BuyerDTO;
+import project.dto.ProductDTO;
+import project.dto.ProductDTOImpl;
 import project.exception.NoRecordFoundException;
 import project.exception.SomethingWentWrongException;
 import project.util.DBUtils;
@@ -200,11 +203,12 @@ public class BuyerDAOImpl implements BuyerDAO {
 	}
 
 	@Override
-	public void purchaseProduct(int id, int q) throws SomethingWentWrongException, NoRecordFoundException {
+	public List<ProductDTO> purchaseProduct(int id, int q) throws SomethingWentWrongException, NoRecordFoundException {
 		Connection conn = null;
+		List<ProductDTO> list;
 		try {
 			conn = DBUtils.getConnectionTodatabase();
-			String query = "SELECT seller_id, price, quantity from product where product_id = ? AND is_deleted = 0";
+			String query = "SELECT seller_id, price, quantity, category_id, name from product where product_id = ? AND is_deleted = 0";
 			PreparedStatement ps = conn.prepareStatement(query);
 
 			ps.setInt(1, id);
@@ -217,11 +221,14 @@ public class BuyerDAOImpl implements BuyerDAO {
 			int sellerId = 0;
 			double price = 0;
 			int quantity = 0;
-
+			int categoryId = 0;
+			String name = null;
 			while (rs.next()) {
 				sellerId = rs.getInt(1);
 				price = rs.getDouble(2);
 				quantity = rs.getInt(3);
+				categoryId = rs.getInt(4);
+				name = rs.getString(5);
 			}
 
 			quantity = quantity - q;
@@ -231,9 +238,20 @@ public class BuyerDAOImpl implements BuyerDAO {
 			ps1.setInt(1, quantity);
 			ps1.setInt(2, id);
 			ps1.executeUpdate();
-
-			price = (price * 110) / 100;
-
+			list = new ArrayList<>();
+			price = price * q;
+			int percent = 0;
+			if (categoryId == 101) {
+				percent = 5;
+			} else if (categoryId == 102) {
+				percent = 7;
+			} else if (categoryId == 103) {
+				percent = 9;
+			} else if (categoryId == 102) {
+				percent = 12;
+			}
+			ProductDTO dto = new ProductDTOImpl(name, price, percent);
+			list.add(dto);
 			String query2 = "INSERT into transaction (seller_id, buyer_id, item_id, price, quantity, transaction_date) VALUES (?,?,?,?,?,?)";
 			PreparedStatement ps2 = conn.prepareStatement(query2);
 			ps2.setInt(1, sellerId);
@@ -254,6 +272,7 @@ public class BuyerDAOImpl implements BuyerDAO {
 
 			}
 		}
+		return list;
 	}
 
 	@Override
@@ -651,6 +670,134 @@ public class BuyerDAOImpl implements BuyerDAO {
 
 		} catch (ClassNotFoundException | SQLException ex) {
 			System.out.println(ex.getMessage());
+		} finally {
+			try {
+				DBUtils.closeConnection(conn);
+			} catch (SQLException ex) {
+
+			}
+		}
+	}
+
+	@Override
+	public void refundProduct(Scanner sc) throws SomethingWentWrongException, NoRecordFoundException {
+		Connection conn = null;
+		try {
+			conn = DBUtils.getConnectionTodatabase();
+
+			LocalDate date = LocalDate.now();
+			LocalDate newDate = date.minusDays(5);
+
+			String query = "SELECT t.transaction_id, p.name, t.price, t.quantity, t.transaction_date, t.seller_id from transaction t join product p ON t.item_id = p.product_id where buyer_id = ? AND t.transaction_date >= ? AND t.is_deleted = 0 AND t.is_returned = 0";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, StaticVar.LoggedInBuyerId);
+			ps.setDate(2, Date.valueOf(newDate));
+			ResultSet rs = ps.executeQuery();
+			if (DBUtils.isResultSetEmpty(rs)) {
+				throw new NoRecordFoundException("	Product Not Found");
+			}
+
+			while (rs.next()) {
+				System.out.print("	Transaction Id : " + rs.getInt(1));
+				System.out.print(", Product Name : " + rs.getString(2));
+				System.out.print(", Price : " + rs.getDouble(3));
+				System.out.print(", Quantity : " + rs.getInt(4));
+				System.out.print(", Transaction Date : " + rs.getDate(5));
+				System.out.print(", Seller Id : " + rs.getInt(6));
+				System.out.println();
+			}
+
+			System.out.print(ConsoleColors.CYAN + "		Enter Transaction Id : " + ConsoleColors.RESET);
+			int tid = sc.nextInt();
+			String query1 = "SELECT quantity, item_id from transaction where buyer_id = ? AND  transaction_id = ? AND is_deleted = 0";
+			PreparedStatement ps1 = conn.prepareStatement(query1);
+			ps1.setInt(1, StaticVar.LoggedInBuyerId);
+			ps1.setInt(2, tid);
+			ResultSet rs1 = ps1.executeQuery();
+			if (DBUtils.isResultSetEmpty(rs1)) {
+				throw new NoRecordFoundException("	Product Not Found");
+			}
+			rs1.next();
+			int quantity = rs1.getInt(1);
+			int pid = rs1.getInt(1);
+
+			String query2 = "UPDATE transaction SET is_returned = 1 where transaction_id = ? AND is_deleted = 0";
+			PreparedStatement ps2 = conn.prepareStatement(query2);
+			ps2.setInt(1, tid);
+			ps2.executeUpdate();
+
+			String query3 = "SELECT quantity from product where product_id = ?";
+			PreparedStatement ps3 = conn.prepareStatement(query3);
+			ps3.setInt(1, pid);
+			ResultSet rs3 = ps3.executeQuery();
+			if (DBUtils.isResultSetEmpty(rs3)) {
+				throw new NoRecordFoundException("	Product Not Found");
+			}
+			rs3.next();
+			int newQ = rs3.getInt(1);
+
+			try {
+				Thread.sleep(1000);
+				System.out.print(ConsoleColors.CYAN + "		Processing.");
+				Thread.sleep(1000);
+				System.out.print(".");
+				Thread.sleep(1000);
+				System.out.print(".");
+				Thread.sleep(1000);
+				System.out.print(".");
+				Thread.sleep(1000);
+				System.out.println("." + ConsoleColors.RESET);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			quantity = quantity + newQ;
+
+			String query4 = "UPDATE product SET quantity = ? where product_id = ?";
+			PreparedStatement ps4 = conn.prepareStatement(query4);
+			ps4.setInt(1, quantity);
+			ps4.setInt(2, pid);
+			if (ps4.executeUpdate() > 0) {
+				System.out.println(ConsoleColors.GREEN_BOLD + "		Product Refund Successful" + ConsoleColors.RESET);
+			}
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			throw new SomethingWentWrongException("View History");
+		} finally {
+			try {
+				DBUtils.closeConnection(conn);
+			} catch (SQLException ex) {
+
+			}
+		}
+	}
+
+	@Override
+	public void viewRefundHistory() throws SomethingWentWrongException, NoRecordFoundException {
+		Connection conn = null;
+		try {
+			conn = DBUtils.getConnectionTodatabase();
+			String query = "SELECT t.transaction_id, p.name, t.price, t.quantity, t.transaction_date, t.seller_id from transaction t join product p ON t.item_id = p.product_id where buyer_id = ? AND t.is_deleted = 0 AND is_returned = 1";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, StaticVar.LoggedInBuyerId);
+			ResultSet rs = ps.executeQuery();
+			if (DBUtils.isResultSetEmpty(rs)) {
+				throw new NoRecordFoundException("	Product Not Found");
+			}
+
+			while (rs.next()) {
+				System.out.print("	Transaction Id : " + rs.getInt(1));
+				System.out.print(", Product Name : " + rs.getString(2));
+				System.out.print(", Price : " + rs.getDouble(3));
+				System.out.print(", Quantity : " + rs.getInt(4));
+				System.out.print(", Transaction Date : " + rs.getDate(5));
+				System.out.print(", Seller Id : " + rs.getInt(6));
+				System.out.println();
+			}
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			throw new SomethingWentWrongException("View History");
 		} finally {
 			try {
 				DBUtils.closeConnection(conn);

@@ -25,6 +25,15 @@ public class AdminUi {
 		System.out.print(ConsoleColors.CYAN + "		Enter your Selection : " + ConsoleColors.RESET);
 	}
 
+	static void viewRefundProduct() {
+		AdminDAO dao = new AdminDAOImpl();
+		try {
+			dao.viewRefundProduct();
+		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out.println(ConsoleColors.RED + "		Refund Product Not Available" + ConsoleColors.RESET);
+		}
+	}
+	
 	static void viewTransactionById(Scanner sc) {
 		System.out.print(ConsoleColors.CYAN + "		Enter Transaction Id : " + ConsoleColors.RESET);
 		int tid = sc.nextInt();
@@ -200,6 +209,9 @@ public class AdminUi {
 				break;
 			case 7:
 				viewTransactionById(sc);
+				break;
+			case 8:
+				viewRefundProduct();
 				break;
 			case 0:
 				System.out.println(ConsoleColors.GREEN + "		Logout Successfull " + ConsoleColors.RESET);

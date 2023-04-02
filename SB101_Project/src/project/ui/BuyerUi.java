@@ -1,5 +1,7 @@
 package project.ui;
 
+import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Scanner;
 
 import project.colors.ConsoleColors;
@@ -8,6 +10,7 @@ import project.dao.BuyerDAOImpl;
 import project.dao.StaticVar;
 import project.dto.BuyerDTO;
 import project.dto.BuyerDTOImpl;
+import project.dto.ProductDTO;
 import project.exception.NoRecordFoundException;
 import project.exception.SomethingWentWrongException;
 
@@ -17,24 +20,35 @@ public class BuyerUi {
 		System.out.println("	1. View All Products");
 		System.out.println("	2. Purchase a Product");
 		System.out.println("	3. Check Purchase History");
-		System.out.println("	4. View Ongoing Auction");
-		System.out.println("	5. Bid for Product");
-		System.out.println("	6. Check Auction History");
-		System.out.println("	7. Update Personal Detail");
-		System.out.println("	8. Delete Account");
+		System.out.println("	4. Refund Product");
+		System.out.println("	5. View Ongoing Auction");
+		System.out.println("	6. Bid for Product");
+		System.out.println("	7. Check Auction History");
+		System.out.println("	8. Update Personal Detail");
+		System.out.println("	9. Delete Account");
 		System.out.println("	0. Logout");
 		System.out.print(ConsoleColors.CYAN + "		Enter Selection : " + ConsoleColors.RESET);
 	}
-	
-	static void forgatPassword(Scanner sc) {
-		
+
+	static void refundProduct(Scanner sc) {
 		BuyerDAO dao = new BuyerDAOImpl();
 		try {
-			dao.forgatPassword(sc);			
+			dao.refundProduct(sc);
+		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
+			System.out
+					.println(ConsoleColors.RED_BOLD + "		You Not Have Any Purchase Product" + ConsoleColors.RESET);
+		}
+	}
+
+	static void forgatPassword(Scanner sc) {
+
+		BuyerDAO dao = new BuyerDAOImpl();
+		try {
+			dao.forgatPassword(sc);
 		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
 			System.out.println(ConsoleColors.RED_BOLD + "		UserName Not Found" + ConsoleColors.RESET);
 		}
-		
+
 	}
 
 	static void auctionHistory() {
@@ -74,12 +88,18 @@ public class BuyerUi {
 		}
 	}
 
-	static void viewHistory() {
+	static void viewHistory(Scanner sc) {
 		BuyerDAO dao = new BuyerDAOImpl();
 		try {
 			dao.viewHistory();
+			System.out.print(ConsoleColors.CYAN + "		Press 1 for View Refund History else 0 : " + ConsoleColors.RESET);
+			int x = sc.nextInt();
+			if(x == 1) {
+				dao.viewRefundHistory();
+			}
 		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
-			System.out.println(ConsoleColors.RED_BOLD + "		You Not Have Any Purchase Product" + ConsoleColors.RESET);
+			System.out
+					.println(ConsoleColors.RED_BOLD + "		You Not Have Any Purchase Product" + ConsoleColors.RESET);
 		}
 	}
 
@@ -96,7 +116,7 @@ public class BuyerUi {
 		try {
 			quantity = dao.checkQuantity(id);
 		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
-			System.out.println(ConsoleColors.RED_BOLD+"		Product Not Found"+ConsoleColors.RESET);
+			System.out.println(ConsoleColors.RED_BOLD + "		Product Not Found" + ConsoleColors.RESET);
 		}
 
 		int temp = 0;
@@ -106,21 +126,43 @@ public class BuyerUi {
 					+ "		Unfortunately, the following items from your order are out of stock."
 					+ ConsoleColors.RESET);
 		} else if (quantity < q) {
-			System.out.println(ConsoleColors.RED_BOLD + "	Only " + quantity + " Product available in the stock."
+			System.out.println(ConsoleColors.RED_BOLD + "		Only " + quantity + " Product available in the stock."
 					+ ConsoleColors.RESET);
 			System.out.print(ConsoleColors.CYAN + "		Press 1 for continue this quantity else type 0 for Exit : "
 					+ ConsoleColors.RESET);
 			temp = sc.nextInt();
+			if (temp == 1) {
+				q = quantity;
+			}
 		} else {
 			temp = 1;
 		}
 
 		if (temp == 1) {
 			try {
-				dao.purchaseProduct(id, q);
+				List<ProductDTO> list = dao.purchaseProduct(id, q);
 				System.out.println(ConsoleColors.GREEN + "		Your Order has been received" + ConsoleColors.RESET);
 
 				try {
+					Thread.sleep(1000);
+					System.out.println(ConsoleColors.YELLOW_BOLD + "		Sales Invoice");
+					System.out.println("	Product Name : " + list.get(0).getName());
+					System.out.println("	Product Price : " + list.get(0).getPrice());
+					double amount = 0;
+					if (list.get(0).getQuantity() == 5) {
+						amount = list.get(0).getPrice() * 0.05;
+					} else if (list.get(0).getQuantity() == 7) {
+						amount = list.get(0).getPrice() * 0.07;
+					} else if (list.get(0).getQuantity() == 9) {
+						amount = list.get(0).getPrice() * 0.09;
+					} else if (list.get(0).getQuantity() == 12) {
+						amount = list.get(0).getPrice() * 0.12;
+					}
+					System.out.println("	GST " + list.get(0).getQuantity() + "% : " + amount);
+					DecimalFormat decfor = new DecimalFormat("0.00");
+					double total = list.get(0).getPrice() + amount;
+					System.out.println("	Total Amount : " + decfor.format(total) + ConsoleColors.RESET);
+
 					System.out.print(ConsoleColors.CYAN + "		Processing.");
 					Thread.sleep(1000);
 					System.out.print(".");
@@ -153,7 +195,7 @@ public class BuyerUi {
 		try {
 			dao.viewProduct();
 		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
-			System.out.println(ConsoleColors.RED_BOLD+"		Product Not Found"+ConsoleColors.RESET);
+			System.out.println(ConsoleColors.RED_BOLD + "		Product Not Found" + ConsoleColors.RESET);
 		}
 
 	}
@@ -231,27 +273,30 @@ public class BuyerUi {
 				purchaseProduct(sc);
 				break;
 			case 3:
-				viewHistory();
+				viewHistory(sc);
 				break;
 			case 4:
-				auctionDetails();
+				refundProduct(sc);
 				break;
 			case 5:
-				createBid(sc);
+				auctionDetails();
 				break;
 			case 6:
-				auctionHistory();
+				createBid(sc);
 				break;
 			case 7:
-				updatePersonal(sc);
+				auctionHistory();
 				break;
 			case 8:
+				updatePersonal(sc);
+				break;
+			case 9:
 				deleteAccount();
 				choice = 0;
 				break;
 			case 0:
 				logout();
-				System.out.print(ConsoleColors.GREEN + "		Logout Successful" + ConsoleColors.RESET);
+				System.out.println(ConsoleColors.GREEN_BOLD + "		Logout Successful" + ConsoleColors.RESET);
 				break;
 			default:
 				System.out

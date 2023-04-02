@@ -553,4 +553,37 @@ public class AdminDAOImpl implements AdminDAO {
 		}
 	}
 
+	@Override
+	public void viewRefundProduct() throws SomethingWentWrongException, NoRecordFoundException {
+		Connection conn = null;
+		try {
+			conn = DBUtils.getConnectionTodatabase();
+			String query = "SELECT t.transaction_id, p.name, t.price, t.quantity, t.transaction_date, t.seller_id from transaction t join product p ON t.item_id = p.product_id where t.is_deleted = 0 AND is_returned = 1";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
+			if (DBUtils.isResultSetEmpty(rs)) {
+				throw new NoRecordFoundException("	Product Not Found");
+			}
+
+			while (rs.next()) {
+				System.out.print("	Transaction Id : " + rs.getInt(1));
+				System.out.print(", Product Name : " + rs.getString(2));
+				System.out.print(", Price : " + rs.getDouble(3));
+				System.out.print(", Quantity : " + rs.getInt(4));
+				System.out.print(", Transaction Date : " + rs.getDate(5));
+				System.out.print(", Seller Id : " + rs.getInt(6));
+				System.out.println();
+			}
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			throw new SomethingWentWrongException("View History");
+		} finally {
+			try {
+				DBUtils.closeConnection(conn);
+			} catch (SQLException ex) {
+
+			}
+		}
+	}
+
 }
