@@ -17,6 +17,7 @@ import project.exception.SomethingWentWrongException;
 public class BuyerUi {
 	static void displayBuyerMenu() {
 		System.out.println();
+		System.out.println(ConsoleColors.YELLOW_BOLD+"		Buyer Menu"+ConsoleColors.RESET);
 		System.out.println("	1. View All Products");
 		System.out.println("	2. Purchase a Product");
 		System.out.println("	3. Check Purchase History");
@@ -146,7 +147,7 @@ public class BuyerUi {
 				try {
 					Thread.sleep(1000);
 					System.out.println(ConsoleColors.YELLOW_BOLD + "		Sales Invoice");
-					System.out.println("	Product Name : " + list.get(0).getName());
+					System.out.println("	Product Name  : " + list.get(0).getName());
 					System.out.println("	Product Price : " + list.get(0).getPrice());
 					double amount = 0;
 					if (list.get(0).getQuantity() == 5) {
@@ -158,10 +159,10 @@ public class BuyerUi {
 					} else if (list.get(0).getQuantity() == 12) {
 						amount = list.get(0).getPrice() * 0.12;
 					}
-					System.out.println("	GST " + list.get(0).getQuantity() + "% : " + amount);
 					DecimalFormat decfor = new DecimalFormat("0.00");
+					System.out.println("	GST " + decfor.format(list.get(0).getQuantity()) + "%    : " + decfor.format(amount));
 					double total = list.get(0).getPrice() + amount;
-					System.out.println("	Total Amount : " + decfor.format(total) + ConsoleColors.RESET);
+					System.out.println("	Total Amount  : " + decfor.format(total) + ConsoleColors.RESET);
 
 					System.out.print(ConsoleColors.CYAN + "		Processing.");
 					Thread.sleep(1000);
@@ -261,40 +262,40 @@ public class BuyerUi {
 		if (!login(sc))
 			return;
 
-		int choice = 0;
+		String choice = "0";
 		do {
 			displayBuyerMenu();
-			choice = sc.nextInt();
+			choice = sc.next();
 			switch (choice) {
-			case 1:
+			case "1":
 				viewProduct();
 				break;
-			case 2:
+			case "2":
 				purchaseProduct(sc);
 				break;
-			case 3:
+			case "3":
 				viewHistory(sc);
 				break;
-			case 4:
+			case "4":
 				refundProduct(sc);
 				break;
-			case 5:
+			case "5":
 				auctionDetails();
 				break;
-			case 6:
+			case "6":
 				createBid(sc);
 				break;
-			case 7:
+			case "7":
 				auctionHistory();
 				break;
-			case 8:
+			case "8":
 				updatePersonal(sc);
 				break;
-			case 9:
+			case "9":
 				deleteAccount();
-				choice = 0;
+				choice = "0";
 				break;
-			case 0:
+			case "0":
 				logout();
 				System.out.println(ConsoleColors.GREEN_BOLD + "		Logout Successful" + ConsoleColors.RESET);
 				break;
@@ -302,7 +303,7 @@ public class BuyerUi {
 				System.out
 						.println(ConsoleColors.RED_BOLD + "		Invalid Selection, try again" + ConsoleColors.RESET);
 			}
-		} while (choice != 0);
+		} while (!choice.equals("0"));
 	}
 
 	static boolean login(Scanner sc) {
