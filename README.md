@@ -65,5 +65,11 @@ Build Automated Auction system application during the construct week at [Masai S
 - MySQL
 - JDBC
 
+# Tools used 
+
+- Spring tool suite 
+- Github
+- Mysql Command Prompt
+- Mysql workbench
 
 ## 👉 [Click here](https://drive.google.com/file/d/1fOWauFL-Lz-lg_2zFfmf4uI4fONW_EAL/view?usp=share_link) to go through a detailed explanation of this application.
