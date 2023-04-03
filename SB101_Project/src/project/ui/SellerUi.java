@@ -17,6 +17,7 @@ public class SellerUi {
 
 	static void displaySellerMenu() {
 		System.out.println();
+		System.out.println(ConsoleColors.YELLOW_BOLD+"		Seller Menu"+ConsoleColors.RESET);
 		System.out.println("	1. View All Products");
 		System.out.println("	2. Add Product");
 		System.out.println("	3. Update Product");
@@ -55,7 +56,7 @@ public class SellerUi {
 		SellerDAO dao = new SellerDAOImpl();
 		try {
 			dao.addProduct(dto);
-			System.out.println(ConsoleColors.GREEN + "		Product Added Successful" + ConsoleColors.RESET);
+			System.out.println(ConsoleColors.GREEN_BOLD + "		Product Added Successful" + ConsoleColors.RESET);
 		} catch (SomethingWentWrongException ex) {
 
 		}
@@ -125,7 +126,7 @@ public class SellerUi {
 			dao.registerSeller(dto);
 			System.out.println(ConsoleColors.GREEN_BOLD + "		Registration Successfull" + ConsoleColors.RESET);
 		} catch (SomethingWentWrongException ex) {
-
+			System.out.println(ConsoleColors.RED_BOLD + "		Username Already Exists" + ConsoleColors.RESET);
 		}
 
 	}
@@ -178,35 +179,35 @@ public class SellerUi {
 		if (!SellerUi.login(sc))
 			return;
 
-		int choice = 0;
+		String choice = "0";
 		do {
 			displaySellerMenu();
-			choice = sc.nextInt();
+			choice = sc.next();
 			switch (choice) {
-			case 1:
+			case "1":
 				viewProduct();
 				break;
-			case 2:
+			case "2":
 				addProduct(sc);
 				break;
-			case 3:
+			case "3":
 				updateProduct(sc);
 				break;
-			case 4:
+			case "4":
 				deleteProduct(sc);
 				break;
-			case 5:
+			case "5":
 				viewTransaction();
 				break;
-			case 6:
+			case "6":
 				updatePersonal(sc);
 				break;
-			case 7:
+			case "7":
 				deleteAccount();
-				choice = 0;
+				choice = "0";
 				break;
 
-			case 0:
+			case "0":
 				logout();
 				System.out.print(ConsoleColors.GREEN + "		Logout Successful" + ConsoleColors.RESET);
 				break;
@@ -214,7 +215,7 @@ public class SellerUi {
 				System.out
 						.println(ConsoleColors.RED + "		Invalid choice. Please try again." + ConsoleColors.RESET);
 			}
-		} while (choice != 0);
+		} while (!choice.equals("0"));
 	}
 
 	static boolean login(Scanner sc) {

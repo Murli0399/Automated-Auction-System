@@ -12,6 +12,7 @@ import project.exception.SomethingWentWrongException;
 public class AdminUi {
 	static void displayAdminMenu() {
 		System.out.println();
+		System.out.println(ConsoleColors.YELLOW_BOLD+"		Admin Menu"+ConsoleColors.RESET);
 		System.out.println("	1. View All User");
 		System.out.println("	2. View All Product");
 		System.out.println("	3. View Sold Product");
@@ -105,28 +106,27 @@ public class AdminUi {
 		int quantity = -1;
 		try {
 			quantity = dao.checkQuantity(id);
-		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
-			System.out.println(ex.getMessage());
-		}
+			if (quantity < 1) {
+				System.out.println(
+						ConsoleColors.RED + "		Unfortunately, the following item out of stock." + ConsoleColors.RESET);
+			} else {
+				System.out.print("	Enter Start Date (YYYY-MM-DD) : ");
+				LocalDate date = LocalDate.parse(sc.next());
+				System.out.print("	Enter Start Time (HH:mm) : ");
+				LocalTime st = LocalTime.parse(sc.next());
+				System.out.print("	Enter Duration of Auction in hours : ");
+				int duration = sc.nextInt();
 
-		if (quantity < 1) {
-			System.out.println(
-					ConsoleColors.RED + "		Unfortunately, the following item out of stock." + ConsoleColors.RESET);
-		} else {
-			System.out.print("	Enter Start Date (YYYY-MM-DD) : ");
-			LocalDate date = LocalDate.parse(sc.next());
-			System.out.print("	Enter Start Time (HH:mm) : ");
-			LocalTime st = LocalTime.parse(sc.next());
-			System.out.print("	Enter Duration of Auction in hours : ");
-			int duration = sc.nextInt();
-
-			try {
-				dao.createAuction(id, date, st, duration);
-				System.out.println(ConsoleColors.GREEN + "		Auction Created Successfull" + ConsoleColors.RESET);
-			} catch (SomethingWentWrongException | NoRecordFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				try {
+					dao.createAuction(id, date, st, duration);
+					System.out.println(ConsoleColors.GREEN + "		Auction Created Successfull" + ConsoleColors.RESET);
+				} catch (SomethingWentWrongException | NoRecordFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+		} catch (SomethingWentWrongException | NoRecordFoundException ex) {
+			System.out.println(ConsoleColors.RED + "		Product Not Available" + ConsoleColors.RESET);
 		}
 
 	}
@@ -181,40 +181,40 @@ public class AdminUi {
 	}
 
 	static void adminMenu(Scanner sc) {
-		int choice = 0;
+		String choice = "0";
 		do {
 
 			displayAdminMenu();
 
-			choice = sc.nextInt();
+			choice = sc.next();
 
 			switch (choice) {
-			case 1:
+			case "1":
 				viewUsers();
 				break;
-			case 2:
+			case "2":
 				viewProduct(sc);
 				break;
-			case 3:
+			case "3":
 				viewSoldProduct(sc);
 				break;
-			case 4:
+			case "4":
 				createAuction(sc);
 				break;
-			case 5:
+			case "5":
 				viewAuctionHistory();
 				break;
-			case 6:
+			case "6":
 				viewTransaction(sc);
 				break;
-			case 7:
+			case "7":
 				viewTransactionById(sc);
 				break;
-			case 8:
+			case "8":
 				viewRefundProduct();
 				break;
-			case 0:
-				System.out.println(ConsoleColors.GREEN + "		Logout Successfull " + ConsoleColors.RESET);
+			case "0":
+				System.out.println(ConsoleColors.GREEN_BOLD + "		Logout Successful " + ConsoleColors.RESET);
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
@@ -227,7 +227,7 @@ public class AdminUi {
 						ConsoleColors.RED_BOLD + "		Invalid choice. Please try again." + ConsoleColors.RESET);
 			}
 
-		} while (choice != 0);
+		} while (!choice.equals("0"));
 	}
 
 	static void adminLogin(Scanner sc) {
