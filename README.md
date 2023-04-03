@@ -10,7 +10,7 @@ Automated Auction system is a console based Application.
 Build Automated Auction system application during the construct week at [Masai School](https://masaischool.com/). Completed the project within five days.
 
 
-# ER Diagram
+# Entity Relationship Diagram
 
 <p style="text-align:center"><img src="SB101_mysql.png"></p>
 
