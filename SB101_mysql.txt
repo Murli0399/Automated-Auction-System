@@ -11,6 +11,15 @@ mysql> show tables;
 +-------------------------+
 6 rows in set (2.90 sec)
 
+mysql> desc category;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int         | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(50) | NO   |     | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (2.53 sec)
+
 
 mysql> select * from category;
 +-----+---------------+
@@ -22,6 +31,23 @@ mysql> select * from category;
 | 104 | Miscellaneous |
 +-----+---------------+
 4 rows in set (0.09 sec)
+
+
+mysql> desc product;
++-------------+---------------+------+-----+---------+----------------+
+| Field       | Type          | Null | Key | Default | Extra          |
++-------------+---------------+------+-----+---------+----------------+
+| product_id  | int           | NO   | PRI | NULL    | auto_increment |
+| seller_id   | int           | NO   | MUL | NULL    |                |
+| name        | varchar(100)  | NO   |     | NULL    |                |
+| price       | decimal(10,2) | NO   |     | NULL    |                |
+| quantity    | int           | NO   |     | NULL    |                |
+| sold_status | int           | NO   |     | 0       |                |
+| category_id | int           | NO   | MUL | NULL    |                |
+| is_deleted  | int           | YES  |     | 0       |                |
++-------------+---------------+------+-----+---------+----------------+
+8 rows in set (0.06 sec)
+
 
 mysql> select * from product;
 +------------+-----------+----------+----------+----------+-------------+-------------+------------+
@@ -35,6 +61,21 @@ mysql> select * from product;
 |          6 |         1 | Mobile   | 13500.00 |       34 |           1 |         102 |          0 |
 +------------+-----------+----------+----------+----------+-------------+-------------+------------+
 6 rows in set (0.10 sec)
+
+
+mysql> desc seller;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| sellerId   | int          | NO   | PRI | NULL    | auto_increment |
+| sellerName | varchar(50)  | NO   |     | NULL    |                |
+| address    | varchar(255) | NO   |     | NULL    |                |
+| mobileNo   | varchar(10)  | NO   |     | NULL    |                |
+| username   | varchar(50)  | NO   | UNI | NULL    |                |
+| password   | varchar(8)   | NO   |     | NULL    |                |
+| is_deleted | int          | YES  |     | 0       |                |
++------------+--------------+------+-----+---------+----------------+
+7 rows in set (0.03 sec)
 
 
 mysql> select * from seller;
@@ -52,6 +93,22 @@ mysql> select * from seller;
 +----------+-------------------+-------------------+------------+-----------------+----------+------------+
 8 rows in set (0.14 sec)
 
+
+mysql> desc buyer;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| buyerId    | int          | NO   | PRI | NULL    | auto_increment |
+| buyerName  | varchar(50)  | YES  |     | NULL    |                |
+| address    | varchar(100) | YES  |     | NULL    |                |
+| mobileNo   | varchar(10)  | YES  |     | NULL    |                |
+| username   | varchar(25)  | YES  | UNI | NULL    |                |
+| password   | varchar(8)   | YES  |     | NULL    |                |
+| is_deleted | int          | YES  |     | 0       |                |
++------------+--------------+------+-----+---------+----------------+
+7 rows in set (0.05 sec)
+
+
 mysql> select * from buyer;
 +---------+--------------+-------------------------+------------+-----------+----------+------------+
 | buyerId | buyerName    | address                 | mobileNo   | username  | password | is_deleted |
@@ -62,6 +119,23 @@ mysql> select * from buyer;
 |       8 | Rishab       | Dhanbad                 | 9898989898 | rishab123 | 123456   |          1 |
 +---------+--------------+-------------------------+------------+-----------+----------+------------+
 4 rows in set (0.12 sec)
+
+
+mysql> desc transaction;
++------------------+---------------+------+-----+---------+----------------+
+| Field            | Type          | Null | Key | Default | Extra          |
++------------------+---------------+------+-----+---------+----------------+
+| transaction_id   | int           | NO   | PRI | NULL    | auto_increment |
+| seller_id        | int           | NO   | MUL | NULL    |                |
+| buyer_id         | int           | NO   | MUL | NULL    |                |
+| item_id          | int           | NO   | MUL | NULL    |                |
+| price            | decimal(10,2) | NO   |     | NULL    |                |
+| quantity         | int           | NO   |     | NULL    |                |
+| transaction_date | date          | YES  |     | NULL    |                |
+| is_returned      | int           | YES  |     | 0       |                |
+| is_deleted       | int           | YES  |     | 0       |                |
++------------------+---------------+------+-----+---------+----------------+
+9 rows in set (0.04 sec)
 
 
 mysql> select * from transaction;
@@ -89,6 +163,23 @@ mysql> select * from transaction;
 +----------------+-----------+----------+---------+----------+----------+------------------+-------------+------------+
 18 rows in set (0.19 sec)
 
+
+mysql> desc auction;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| auction_id | int          | NO   | PRI | NULL    | auto_increment |
+| seller_id  | int          | NO   | MUL | NULL    |                |
+| product_id | int          | NO   | MUL | NULL    |                |
+| price      | double(10,2) | NO   |     | NULL    |                |
+| date       | date         | YES  |     | NULL    |                |
+| start_time | time         | YES  |     | NULL    |                |
+| end_time   | time         | YES  |     | NULL    |                |
+| buyer_id   | int          | YES  |     | 0       |                |
+| is_sold    | int          | YES  |     | 0       |                |
+| is_deleted | int          | YES  |     | 0       |                |
++------------+--------------+------+-----+---------+----------------+
+10 rows in set (0.07 sec)
 
 
 mysql> select * from auction;
