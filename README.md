@@ -17,23 +17,23 @@ Build Automated Auction system application during the construct week at [Masai S
 
 # Users of the System
 
-- Administrator
+- Admin
 - Seller
 - Buyer
 
-## 1. Administrator
+## 1. Admin Features
 
-- An administrator can view the registered buyer and Seller list.
-- An administrator can view all product list.
-- An administrator can create an auction.
-- An Administrator can auction history.
-- An Administrator can see all items to be sold and all items already sold.
-- An Administrator can see items ny category.
-- An Administrator can view all transactions.
-- An Administrator can search transactions for a date range.
-- An Administrator can search transactions by transaction id.
+- An Admin can view the registered buyer and Seller list.
+- An Admin can view all product list.
+- An Admin can create an auction.
+- An Admin can auction history.
+- An Admin can see all items to be sold and all items already sold.
+- An Admin can see items ny category.
+- An Admin can view all transactions.
+- An Admin can search transactions for a date range.
+- An Admin can search transactions by transaction id.
 
-## 2. Seller
+## 2. Seller Features
 
 - The seller can register himself or herself as a seller.
 - The seller can update personal details.
@@ -44,7 +44,7 @@ Build Automated Auction system application during the construct week at [Masai S
 - The seller can delete account.
 - Login / Logout
 
-## 3. Buyer
+## 3. Buyer Features
 
 - Buyer can register himself or herself as Buyer.
 - Buyer can update personal details.
