@@ -59,13 +59,13 @@ Build Automated Auction system application during the construct week at [Masai S
 - Buyer can also view auction history.
 - Buyer can delete himself account.
 
-# Technology used 
+## Technology used 
 
 - Java 
 - MySQL
 - JDBC
 
-# Tools used 
+## Tools used 
 
 - Spring tool suite 
 - Github
