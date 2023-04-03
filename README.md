@@ -1,13 +1,13 @@
 # Automated Auction system
 
 
-> An automated Auction System is an Application Software that is used for the buying and
+An automated Auction System is an Application Software that is used for the buying and
 selling of products. This software can be used by the auction companies who arrange
 the Auction. Various buyers and sellers are registered in the Auction company.
 
-> Automated Auction system is a console based Application.
+Automated Auction system is a console based Application.
 
-> Build Automated Auction system application during the construct week at [Masai School](https://masaischool.com/). Completed the project within five days.
+Build Automated Auction system application during the construct week at [Masai School](https://masaischool.com/). Completed the project within five days.
 
 
 # ER Diagram
